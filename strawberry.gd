@@ -12,7 +12,6 @@ var action_right = "p1_right"
 var action_jump  = "p1_jump"
 var action_shoot = "p1_shoot"
 
-# max_speed lokalnie bo nigdy sie nie zmienia w trakcie gry
 var max_speed: float
 
 var coyote_time_activated: bool = false
@@ -23,6 +22,8 @@ const acceleration: float = 8
 const friction: float = 10
 
 func _ready():
+	if Global.characters.is_empty():
+		Global.reset_all()
 	max_speed = Global.characters[character_name]["speed"]
 	Reloading.wait_time = Global.characters[character_name]["fire_rate"]
 
@@ -32,10 +33,10 @@ func get_input():
 		Reloading.start()
 
 func die():
+	Global.alive[character_name] = false
 	queue_free()
 
 func _physics_process(delta: float) -> void:
-	# Sprawdzaj smierc przez Global
 	if Global.characters[character_name]["hp"] <= 0:
 		die()
 		return

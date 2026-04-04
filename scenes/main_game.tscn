@@ -64,6 +64,22 @@ position = Vector2(22, 45)
 
 [node name="Bullets" type="Node2D" parent="."]
 
+[node name="StrawberryHp" type="Label" parent="."]
+texture_filter = 1
+offset_left = -192.0
+offset_top = -108.0
+offset_right = -152.0
+offset_bottom = -85.0
+text = "x"
+
+[node name="GrapeHp" type="Label" parent="."]
+texture_filter = 1
+offset_left = -192.0
+offset_top = -82.0
+offset_right = -152.0
+offset_bottom = -59.0
+text = "x"
+
 [connection signal="shoot" from="Players/Strawberry" to="." method="_on_strawberry_shoot"]
 [connection signal="shoot" from="Players/Strawberry" to="Bullets" method="_on_strawberry_shoot"]
 [connection signal="shoot" from="Players/Grape" to="." method="_on_grape_shoot"]

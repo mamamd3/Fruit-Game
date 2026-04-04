@@ -21,8 +21,6 @@ position = Vector2(0, -0.190115)
 scale = Vector2(0.809116, 0.838023)
 shape = SubResource("RectangleShape2D_mhe14")
 
-[node name="Gnicie" type="Timer" parent="."]
-
 [node name="JumpBufferTimer" type="Timer" parent="."]
 wait_time = 0.12
 one_shot = true
