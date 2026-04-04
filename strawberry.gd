@@ -4,6 +4,7 @@ extends CharacterBody2D
 @onready var CoyoteTimer: Timer = $Coyote
 @onready var JumpBufferTimer: Timer = $JumpBufferTimer
 @onready var Reloading: Timer = $ReloadTime
+signal shoot(pos: Vector2, dir: Vector2)
 
 var coyote_time_activated: bool = false
 
@@ -18,8 +19,8 @@ const friction: float = 10
 
 func get_input():
 	if Input.is_action_just_pressed("Shoot") and Reloading.is_stopped():
+		shoot.emit(position, get_local_mouse_position().normalized())
 		Reloading.start()
-		print("SHOOTING")
 
 
 
