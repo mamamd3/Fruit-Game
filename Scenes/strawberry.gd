@@ -5,12 +5,12 @@ extends CharacterBody2D
 @onready var Reloading: Timer = $ReloadTime
 signal shoot(pos: Vector2, dir: Vector2)
 
-# ← TO JEDYNE CO ZMIENIASZ MIĘDZY POSTACIAMI
-var character_name = "strawberry"
-var action_left  = "p1_left"
-var action_right = "p1_right"
-var action_jump  = "p1_jump"
-var action_shoot = "p1_shoot"
+
+var character_name = "Strawberry"
+var action_left  = ""
+var action_right = ""
+var action_jump  = ""
+var action_shoot = ""
 
 var max_speed: float
 
@@ -34,6 +34,7 @@ func get_input():
 
 func die():
 	Global.alive[character_name] = false
+	Global.death_order.append(character_name)  # ← brakowało tego
 	queue_free()
 
 func _physics_process(delta: float) -> void:

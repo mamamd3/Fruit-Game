@@ -6,11 +6,11 @@ extends CharacterBody2D
 signal shoot(pos: Vector2, dir: Vector2)
 
 # ← TO JEDYNE CO ZMIENIASZ MIĘDZY POSTACIAMI
-var character_name = "grape"
-var action_left  = "p2_left"
-var action_right = "p2_right"
-var action_jump  = "p2_jump"
-var action_shoot = "p2_shoot"
+var character_name = "Grape"
+var action_left  = ""
+var action_right = ""
+var action_jump  = ""
+var action_shoot = ""
 
 var max_speed: float
 
@@ -34,8 +34,8 @@ func get_input():
 
 func die():
 	Global.alive[character_name] = false
+	Global.death_order.append(character_name)  # ← brakowało tego
 	queue_free()
-
 func _physics_process(delta: float) -> void:
 	if Global.characters[character_name]["hp"] <= 0:
 		die()

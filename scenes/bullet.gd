@@ -1,7 +1,7 @@
 extends Area2D
 
 var velocity: Vector2
-var shooter_name = "strawberry"  # ← jedyne co zmieniasz między bulletami
+var shooter_name = "Strawberry"  # ← jedyne co zmieniasz między bulletami
 const GRAVITY = 75.0
 
 func setup(pos: Vector2, dir: Vector2):
@@ -16,10 +16,10 @@ func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("Terrain"):
 		queue_free()
 	if body.is_in_group("strawberry"):
-		Global.characters["strawberry"]["hp"] -= Global.characters[shooter_name]["dmg"]
-		print(Global.characters["strawberry"]["hp"])
+		Global.characters["Strawberry"]["hp"] -= Global.characters[shooter_name]["dmg"]
+		print(Global.characters["Strawberry"]["hp"])
 		queue_free()
 	if body.is_in_group("grape"):
-		Global.characters["grape"]["hp"] -= Global.characters[shooter_name]["dmg"]
-		print(Global.characters["grape"]["hp"])
+		Global.characters["Grape"]["hp"] -= Global.characters[shooter_name]["dmg"]
+		print(Global.characters["Grape"]["hp"])
 		queue_free()

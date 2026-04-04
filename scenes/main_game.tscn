@@ -1,8 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://gt2yka256xqx"]
+[gd_scene load_steps=4 format=3 uid="uid://gt2yka256xqx"]
 
-[ext_resource type="PackedScene" uid="uid://cog1lnh16jwd3" path="res://Scenes/strawberry.tscn" id="1_btoa8"]
 [ext_resource type="Script" path="res://Scenes/main_game.gd" id="1_wrak2"]
-[ext_resource type="PackedScene" uid="uid://dxwakrvs65rur" path="res://Scenes/grape.tscn" id="2_vrmt7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_11geg"]
 size = Vector2(384, 40)
@@ -54,32 +52,12 @@ offset_bottom = 45.0
 position = Vector2(-125, 36.5)
 shape = SubResource("RectangleShape2D_jmkyb")
 
-[node name="Players" type="Node2D" parent="."]
-
-[node name="Strawberry" parent="Players" instance=ExtResource("1_btoa8")]
-position = Vector2(-50, 45)
-
-[node name="Grape" parent="Players" instance=ExtResource("2_vrmt7")]
-position = Vector2(22, 45)
-
 [node name="Bullets" type="Node2D" parent="."]
 
-[node name="StrawberryHp" type="Label" parent="."]
-texture_filter = 1
-offset_left = -192.0
-offset_top = -108.0
-offset_right = -152.0
-offset_bottom = -85.0
-text = "x"
+[node name="Players" type="Node" parent="."]
 
-[node name="GrapeHp" type="Label" parent="."]
-texture_filter = 1
-offset_left = -192.0
-offset_top = -82.0
-offset_right = -152.0
-offset_bottom = -59.0
-text = "x"
+[node name="SpawnPoint1" type="Marker2D" parent="Players"]
+position = Vector2(91, 19)
 
-[connection signal="shoot" from="Players/Strawberry" to="." method="_on_strawberry_shoot"]
-[connection signal="shoot" from="Players/Strawberry" to="Bullets" method="_on_strawberry_shoot"]
-[connection signal="shoot" from="Players/Grape" to="." method="_on_grape_shoot"]
+[node name="SpawnPoint2" type="Marker2D" parent="Players"]
+position = Vector2(-121, 7)

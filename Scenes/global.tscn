@@ -8,6 +8,5 @@ script = ExtResource("1_11p7f")
 [node name="Gnicie" type="Timer" parent="."]
 wait_time = 10.0
 one_shot = true
-autostart = true
 
 [connection signal="timeout" from="Gnicie" to="." method="_on_gnicie_timeout"]
