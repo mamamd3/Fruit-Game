@@ -1,12 +1,12 @@
 [gd_scene load_steps=3 format=3 uid="uid://fcbnxjdrbkff"]
 
-[ext_resource type="Script" path="res://Scenes/bullet.gd" id="1_ncfcf"]
+[ext_resource type="Script" path="res://Scenes/bullet.gd" id="1_cx22g"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_abnrc"]
 size = Vector2(2, 1)
 
-[node name="bullet" type="Area2D" groups=["Bullet"]]
-script = ExtResource("1_ncfcf")
+[node name="strawberry_bullet" type="Area2D" groups=["Bullet"]]
+script = ExtResource("1_cx22g")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(1, 0.5)

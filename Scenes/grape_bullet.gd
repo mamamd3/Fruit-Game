@@ -1,11 +1,11 @@
 extends Area2D
 
 var velocity: Vector2
-var shooter_name = "strawberry"  # ← jedyne co zmieniasz między bulletami
+var shooter_name = "grape"  # ← jedyne co zmieniasz między bulletami
 const GRAVITY = 75.0
 
 func setup(pos: Vector2, dir: Vector2):
-	position = pos + dir * 12
+	position = pos + dir * 20
 	velocity = dir * 180
 
 func _physics_process(delta: float) -> void:

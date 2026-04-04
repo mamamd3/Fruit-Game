@@ -66,3 +66,4 @@ position = Vector2(22, 45)
 
 [connection signal="shoot" from="Players/Strawberry" to="." method="_on_strawberry_shoot"]
 [connection signal="shoot" from="Players/Strawberry" to="Bullets" method="_on_strawberry_shoot"]
+[connection signal="shoot" from="Players/Grape" to="." method="_on_grape_shoot"]
