@@ -1,8 +1,8 @@
 [gd_scene load_steps=6 format=3 uid="uid://gt2yka256xqx"]
 
-[ext_resource type="PackedScene" uid="uid://cog1lnh16jwd3" path="res://scenes/strawberry.tscn" id="1_btoa8"]
+[ext_resource type="PackedScene" uid="uid://cog1lnh16jwd3" path="res://Scenes/strawberry.tscn" id="1_btoa8"]
 [ext_resource type="Script" path="res://Scenes/main_game.gd" id="1_wrak2"]
-[ext_resource type="PackedScene" uid="uid://dxwakrvs65rur" path="res://scenes/grape.tscn" id="2_vrmt7"]
+[ext_resource type="PackedScene" uid="uid://dxwakrvs65rur" path="res://Scenes/grape.tscn" id="2_vrmt7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_11geg"]
 size = Vector2(384, 40)
@@ -56,10 +56,10 @@ shape = SubResource("RectangleShape2D_jmkyb")
 
 [node name="Players" type="Node2D" parent="."]
 
-[node name="Strawberry" parent="Players" groups=["Player", "strawberry"] instance=ExtResource("1_btoa8")]
+[node name="Strawberry" parent="Players" instance=ExtResource("1_btoa8")]
 position = Vector2(-50, 45)
 
-[node name="Grape" parent="Players" groups=["Player", "grape"] instance=ExtResource("2_vrmt7")]
+[node name="Grape" parent="Players" instance=ExtResource("2_vrmt7")]
 position = Vector2(22, 45)
 
 [node name="Bullets" type="Node2D" parent="."]
