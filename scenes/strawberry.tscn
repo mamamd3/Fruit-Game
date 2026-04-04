@@ -5,7 +5,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mhe14"]
 size = Vector2(20, 19.5463)
 
-[node name="Strawberry" type="CharacterBody2D"]
+[node name="Strawberry" type="CharacterBody2D" groups=["Player", "strawberry"]]
 script = ExtResource("1_rdxxn")
 
 [node name="ColorRect" type="ColorRect" parent="."]
@@ -70,3 +70,12 @@ target_position = Vector2(-2, 0)
 [node name="ReloadTime" type="Timer" parent="."]
 wait_time = 0.5
 one_shot = true
+
+[node name="Hitbox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(0, -0.190115)
+scale = Vector2(0.809116, 0.838023)
+shape = SubResource("RectangleShape2D_mhe14")
+
+[connection signal="body_entered" from="Hitbox" to="." method="_on_hitbox_body_entered"]

@@ -18,7 +18,7 @@ zoom = Vector2(3, 3)
 
 [node name="Terrain" type="Node2D" parent="."]
 
-[node name="Ground" type="StaticBody2D" parent="Terrain"]
+[node name="Ground" type="StaticBody2D" parent="Terrain" groups=["Terrain"]]
 position = Vector2(-192, 68)
 
 [node name="ColorRect" type="ColorRect" parent="Terrain/Ground"]
@@ -29,7 +29,7 @@ offset_bottom = 40.0
 position = Vector2(192, 20)
 shape = SubResource("RectangleShape2D_11geg")
 
-[node name="Platform" type="StaticBody2D" parent="Terrain"]
+[node name="Platform" type="StaticBody2D" parent="Terrain" groups=["Terrain"]]
 
 [node name="ColorRect" type="ColorRect" parent="Terrain/Platform"]
 offset_left = -171.0
@@ -41,7 +41,7 @@ offset_bottom = 45.0
 position = Vector2(-125, 36.5)
 shape = SubResource("RectangleShape2D_jmkyb")
 
-[node name="Platform2" type="StaticBody2D" parent="Terrain"]
+[node name="Platform2" type="StaticBody2D" parent="Terrain" groups=["Terrain"]]
 position = Vector2(223, 18)
 
 [node name="ColorRect" type="ColorRect" parent="Terrain/Platform2"]
@@ -56,10 +56,10 @@ shape = SubResource("RectangleShape2D_jmkyb")
 
 [node name="Players" type="Node2D" parent="."]
 
-[node name="Strawberry" parent="Players" instance=ExtResource("1_btoa8")]
+[node name="Strawberry" parent="Players" groups=["Player", "strawberry"] instance=ExtResource("1_btoa8")]
 position = Vector2(-50, 45)
 
-[node name="Grape" parent="Players" instance=ExtResource("2_vrmt7")]
+[node name="Grape" parent="Players" groups=["Player", "grape"] instance=ExtResource("2_vrmt7")]
 position = Vector2(22, 45)
 
 [node name="Bullets" type="Node2D" parent="."]

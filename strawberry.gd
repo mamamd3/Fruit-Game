@@ -6,6 +6,9 @@ extends CharacterBody2D
 @onready var Reloading: Timer = $ReloadTime
 signal shoot(pos: Vector2, dir: Vector2)
 
+
+
+
 var coyote_time_activated: bool = false
 
 const jump_height: float = -230

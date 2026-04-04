@@ -3,7 +3,6 @@ extends CharacterBody2D
 
 @onready var CoyoteTimer: Timer = $Coyote
 @onready var JumpBufferTimer: Timer = $JumpBufferTimer
-
 var coyote_time_activated: bool = false
 
 const jump_height: float = -230

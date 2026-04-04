@@ -11,14 +11,26 @@ config_version=5
 [application]
 
 config/name="gra"
-run/main_scene="res://scenes/main_game.tscn"
+run/main_scene="res://Scenes/main_game.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+Global="*res://Scenes/global.tscn"
 
 [editor]
 
 version_control/plugin_name="GitPlugin"
 version_control/autoload_on_startup=true
+
+[global_group]
+
+Bullet=""
+Terrain=""
+Player=""
+strawberry=""
+grape=""
 
 [input]
 
