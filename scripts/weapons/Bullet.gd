@@ -31,6 +31,8 @@ func _on_body_entered(body: Node) -> void:
 			_explode()
 		else:
 			body.take_damage(damage)
+		if "PoisonTrail" in mods and body.has_method("apply_poison"):
+			body.apply_poison(3, 5)
 		emit_signal("hit_player", self, body)
 	elif body.is_in_group("walls"):
 		if _bounces_left > 0:
