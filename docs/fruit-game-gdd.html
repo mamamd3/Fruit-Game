@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FRUIT GAME — Game Design Document v1.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e0e;
+    --surface: #161616;
+    --card: #1c1c1c;
+    --border: #2a2a2a;
+    --accent-red: #ff4d4d;
+    --accent-yellow: #ffd426;
+    --accent-green: #52e05e;
+    --accent-orange: #ff8c42;
+    --accent-purple: #c084fc;
+    --text: #f0f0f0;
+    --muted: #888;
+    --tag-bg: #252525;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    line-height: 1.6;
+    font-size: 15px;
+  }
+
+  /* HEADER */
+  .hero {
+    background: linear-gradient(135deg, #1a0a00 0%, #0a0a1a 50%, #0a1a0a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 40px 50px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 20% 50%, rgba(255,77,77,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 50%, rgba(255,212,38,0.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .fruits-bg {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 60px;
+    font-size: 5rem;
+    gap: 12px;
+    opacity: 0.12;
+    pointer-events: none;
+    letter-spacing: 8px;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    border-radius: 99px;
+    padding: 4px 12px;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .badge span { color: var(--accent-green); }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.8rem, 6vw, 5rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -2px;
+  }
+
+  h1 .fruit { color: var(--accent-yellow); }
+
+  .subtitle {
+    margin-top: 14px;
+    color: var(--muted);
+    font-size: 14px;
+    max-width: 520px;
+    line-height: 1.7;
+  }
+
+  .meta-row {
+    display: flex;
+    gap: 28px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .meta-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+  .meta-value { font-size: 14px; font-weight: 600; }
+
+  /* LAYOUT */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* SECTIONS */
+  .section {
+    margin-top: 52px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 2px;
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+  }
+
+  /* FRUIT CHARACTERS */
+  .fruit-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: border-color .2s;
+  }
+
+  .fruit-card:hover { border-color: #444; }
+
+  .fruit-icon {
+    font-size: 2.4rem;
+    line-height: 1;
+  }
+
+  .fruit-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  .fruit-role {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border-radius: 99px;
+    display: inline-block;
+    font-weight: 600;
+  }
+
+  .role-scout { background: rgba(82,224,94,0.12); color: var(--accent-green); }
+  .role-sniper { background: rgba(255,140,66,0.12); color: var(--accent-orange); }
+  .role-tank { background: rgba(255,77,77,0.12); color: var(--accent-red); }
+  .role-sharpshooter { background: rgba(255,212,38,0.12); color: var(--accent-yellow); }
+
+  .stat-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .stat {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+  }
+
+  .stat-label { color: var(--muted); width: 72px; flex-shrink: 0; font-size: 11px; }
+
+  .stat-bar {
+    flex: 1;
+    height: 4px;
+    background: #2a2a2a;
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .stat-fill {
+    height: 100%;
+    border-radius: 99px;
+  }
+
+  .fill-red { background: var(--accent-red); }
+  .fill-yellow { background: var(--accent-yellow); }
+  .fill-green { background: var(--accent-green); }
+  .fill-orange { background: var(--accent-orange); }
+  .fill-purple { background: var(--accent-purple); }
+
+  .ability-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 12px;
+    margin-top: 4px;
+    color: var(--muted);
+  }
+
+  .ability-tag b { color: var(--text); }
+
+  /* TIMELINE / ROUND FLOW */
+  .round-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .round-step {
+    display: flex;
+    gap: 16px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .round-step:last-child { border-bottom: none; }
+
+  .step-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--tag-bg);
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+    font-family: 'Syne', sans-serif;
+  }
+
+  .step-content h4 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: .95rem;
+    margin-bottom: 4px;
+  }
+
+  .step-content p { font-size: 13px; color: #ccc; }
+
+  /* MODIFIERS */
+  .mod-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+  }
+
+  .mod-card {
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 13px;
+  }
+
+  .mod-icon { font-size: 1.4rem; margin-bottom: 6px; }
+  .mod-name { font-weight: 600; font-size: 12px; margin-bottom: 3px; }
+  .mod-desc { font-size: 11px; color: var(--muted); }
+
+  /* MUTATORS */
+  .mutator-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .mutator {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+
+  .mutator-icon { font-size: 1.6rem; flex-shrink: 0; }
+
+  .mutator-body h4 {
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 2px;
+  }
+
+  .mutator-body p { font-size: 12px; color: var(--muted); }
+
+  /* SUGGESTION PILL */
+  .suggest {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,212,38,0.06);
+    border: 1px solid rgba(255,212,38,0.2);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #e0c84f;
+    margin-top: 10px;
+  }
+
+  .suggest-icon { font-size: 1rem; }
+
+  /* SPECIAL POWER-UPS */
+  .powerup-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+  }
+
+  .powerup {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .powerup::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .pw-fire::before { background: linear-gradient(90deg, #ff4d4d, #ff8c42); }
+  .pw-ice::before  { background: linear-gradient(90deg, #67e8f9, #818cf8); }
+  .pw-poison::before { background: linear-gradient(90deg, #4ade80, #a3e635); }
+
+  .powerup h4 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: .95rem;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .powerup p { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  /* JUICE EFFECTS */
+  .juice-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .juice-table th {
+    text-align: left;
+    padding: 8px 12px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    font-weight: 500;
+  }
+
+  .juice-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #1e1e1e;
+    vertical-align: top;
+  }
+
+  .juice-table tr:last-child td { border-bottom: none; }
+  .juice-table td:first-child { width: 100px; }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 60px;
+    padding: 30px 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .footer-left { font-size: 12px; color: var(--muted); }
+  .footer-left b { color: var(--text); }
+  .version-tag {
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 11px;
+    color: var(--muted);
+    font-family: monospace;
+  }
+
+  /* TAG PILL */
+  .tag {
+    display: inline-block;
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-size: 11px;
+    color: var(--muted);
+    margin: 2px;
+  }
+
+  .tag.green { border-color: rgba(82,224,94,0.3); color: var(--accent-green); background: rgba(82,224,94,0.05); }
+  .tag.yellow { border-color: rgba(255,212,38,0.3); color: var(--accent-yellow); background: rgba(255,212,38,0.05); }
+  .tag.red { border-color: rgba(255,77,77,0.3); color: var(--accent-red); background: rgba(255,77,77,0.05); }
+
+  p { margin-bottom: 0; }
+
+  ul {
+    padding-left: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13px;
+    color: #ccc;
+  }
+
+  ul li { padding-left: 4px; }
+
+  .note {
+    background: rgba(255,212,38,0.04);
+    border-left: 3px solid rgba(255,212,38,0.4);
+    border-radius: 0 6px 6px 0;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #ddd;
+    margin-top: 10px;
+  }
+
+  .note strong { color: var(--accent-yellow); }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="fruits-bg">🍓🍇🍍🍊</div>
+  <div class="container" style="padding-top:0;padding-bottom:0;max-width:900px;">
+    <div class="badge"><span>●</span> Game Design Document</div>
+    <h1><span class="fruit">FRUIT</span><br>GAME</h1>
+    <p class="subtitle">
+      Wieloosobowa gra akcji PvP, w której owocowe postacie walczą na losowych mapach — gniją z upływem czasu i ewoluują dzięki systemowi modyfikatorów.
+    </p>
+    <div class="meta-row">
+      <div class="meta-item">
+        <span class="meta-label">Gracze</span>
+        <span class="meta-value">2–4 lokalni / sieciowi</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Gatunek</span>
+        <span class="meta-value">Arena Shooter / Brawler</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Perspektywa</span>
+        <span class="meta-value">2D z góry / 2.5D</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Wersja dokumentu</span>
+        <span class="meta-value">v1.0 — draft</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 1. CORE LOOP -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2>Pętla rozgrywki (Core Loop)</h2>
+    </div>
+
+    <div class="card">
+      <div class="round-flow">
+        <div class="round-step">
+          <div class="step-dot" style="border-color:var(--accent-green);color:var(--accent-green);">1</div>
+          <div class="step-content">
+            <h4>Wybór postaci</h4>
+            <p>Każdy gracz wybiera owocka przed rundą. Każda postać ma unikalną rolę bojową i umiejętność specjalną.</p>
+          </div>
+        </div>
+        <div class="round-step">
+          <div class="step-dot" style="border-color:var(--accent-yellow);color:var(--accent-yellow);">2</div>
+          <div class="step-content">
+            <h4>Walka na losowej mapie</h4>
+            <p>Gracze spawnują w losowych punktach mapy. Każda runda toczy się na innym układzie terenu z unikalnymi przeszkodami.</p>
+          </div>
+        </div>
+        <div class="round-step">
+          <div class="step-dot" style="border-color:var(--accent-orange);color:var(--accent-orange);">3</div>
+          <div class="step-content">
+            <h4>Mechanika gnicia</h4>
+            <p>Z upływem czasu każdy owocek traci HP — gnije. Zmusza to do aktywnej walki i eliminuje strategie "siedzenia w krzakach". Tempo gnicia może rosnąć wraz z czasem rundy.</p>
+          </div>
+        </div>
+        <div class="round-step">
+          <div class="step-dot" style="border-color:var(--accent-red);color:var(--accent-red);">4</div>
+          <div class="step-content">
+            <h4>Koniec rundy i ranking</h4>
+            <p>Runda kończy się, gdy zostanie jeden owocek lub wszyscy zginą (remis decyduje o rankingu na podstawie ostatniego HP). Gracze są uszeregowani 1–4.</p>
+          </div>
+        </div>
+        <div class="round-step">
+          <div class="step-dot" style="border-color:var(--accent-purple);color:var(--accent-purple);">5</div>
+          <div class="step-content">
+            <h4>Faza modyfikatorów</h4>
+            <p>Gracze wybierają modyfikatory <b>od ostatniego miejsca do pierwszego</b>. Miejsca 1 i 2 nie wybierają ulepszenia w tej rundzie (anty-snowball). Następnie nowa runda.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>💡 Drobna propozycja:</strong> Warto ustalić ile rund trwa mecz — np. 5 rund z finalnym liczeniem punktów. Dzięki temu mecz ma wyraźny koniec i buduje napięcie na przestrzeni całej rozgrywki, nie tylko jednej rundy.
+    </div>
+  </div>
+
+  <!-- 2. POSTACIE -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2>Postacie — Owocki</h2>
+    </div>
+
+    <div class="card-grid">
+
+      <!-- TRUSKAWKA -->
+      <div class="fruit-card">
+        <div class="fruit-icon">🍓</div>
+        <div>
+          <div class="fruit-name">Truskawka</div>
+          <span class="fruit-role role-scout">Wszechstronny</span>
+        </div>
+        <div class="stat-row">
+          <div class="stat">
+            <span class="stat-label">❤️ HP</span>
+            <div class="stat-bar"><div class="stat-fill fill-red" style="width:60%"></div></div>
+          </div>
+          <div class="stat">
+            <span class="stat-label">⚡ Szybk.</span>
+            <div class="stat-bar"><div class="stat-fill fill-yellow" style="width:60%"></div></div>
+          </div>
+          <div class="stat">
+            <span class="stat-label">💥 DMG</span>
+            <div class="stat-bar"><div class="stat-fill fill-orange" style="width:60%"></div></div>
+          </div>
+          <div class="stat">
+            <span class="stat-label">🎯 Zasięg</span>
+            <div class="stat-bar"><div class="stat-fill fill-green" style="width:60%"></div></div>
+          </div>
+        </div>
+        <div class="ability-tag">✨ <b>Umiejętność:</b> Dash — krótki zryw w kierunku ruchu</div>
+      </div>
+
+      <!-- WINOGRONO -->
+      <div class="fruit-card">
+        <div class="fruit-icon">🍇</div>
+        <div>
+          <div class="fruit-name">Winogrono</div>
+          <span class="fruit-role role-scout">Szybkostrzelny</span>
+        </div>
+        <div class="stat-row">
+          <div class="stat">
+            <span class="stat-label">❤️ HP</span>
+            <div class="stat-bar"><div class="stat-fill fill-red" style="width:30%"></div></div>
+          </div>
+          <div class="stat">
+            <span class="stat-label">⚡ Szybk.</span>
+            <div class="stat-bar"><div class="stat-fill fill-yellow" style="width:80%"></div></div>
+          </div>
+          <div class="stat">
+            <span class="stat-label">💥 DMG</span>
+            <div class="stat-bar"><div class="stat-fill fill-orange" style="width:30%"></div></div>
+          </div>
+          <div class="stat">
+            <span class="stat-label">🎯 Zasięg</span>
+            <div class="stat-bar"><div class="stat-fill fill-green" style="width:55%"></div></div>
+          </div>
+        </div>
+        <div class="ability-tag">✨ <b>Umiejętność:</b> Grad winogron — chwilowe przyspieszenie ognia</div>
+      </div>
+
+      <!-- ANANAS -->
+      <div class="fruit-card">
+        <div class="fruit-icon">🍍</div>
+        <div>
+          <div class="fruit-name">Ananas</div>
+          <span class="fruit-role role-tank">Tank</span>
+        </div>
+        <div class="stat-row">
+          <div class="stat">
+            <span class="stat-label">❤️ HP</span>
+            <div class="stat-bar"><div class="stat-fill fill-red" style="width:90%"></div></div>
+          </div>
+          <div class="stat">
+            <span class="stat-label">⚡ Szybk.</span>
+            <div class="stat-bar"><div class="stat-fill fill-yellow" style="width:30%"></div></div>
+          </div>
+          <div class="stat">
+            <span class="stat-label">💥 DMG</span>
+            <div class="stat-bar"><div class="stat-fill fill-orange" style="width:80%"></div></div>
+          </div>
+          <div class="stat">
+            <span class="stat-label">🎯 Zasięg</span>
+            <div class="stat-bar"><div class="stat-fill fill-green" style="width:20%"></div></div>
+          </div>
+        </div>
+        <div class="ability-tag">✨ <b>Umiejętność:</b> Kolce — wystrzeliwuje pociski wokół siebie</div>
+      </div>
+
+      <!-- POMARAŃCZA -->
+      <div class="fruit-card">
+        <div class="fruit-icon">🍊</div>
+        <div>
+          <div class="fruit-name">Pomarańcza</div>
+          <span class="fruit-role role-sniper">Snajper</span>
+        </div>
+        <div class="stat-row">
+          <div class="stat">
+            <span class="stat-label">❤️ HP</span>
+            <div class="stat-bar"><div class="stat-fill fill-red" style="width:45%"></div></div>
+          </div>
+          <div class="stat">
+            <span class="stat-label">⚡ Szybk.</span>
+            <div class="stat-bar"><div class="stat-fill fill-yellow" style="width:40%"></div></div>
+          </div>
+          <div class="stat">
+            <span class="stat-label">💥 DMG</span>
+            <div class="stat-bar"><div class="stat-fill fill-orange" style="width:90%"></div></div>
+          </div>
+          <div class="stat">
+            <span class="stat-label">🎯 Zasięg</span>
+            <div class="stat-bar"><div class="stat-fill fill-green" style="width:95%"></div></div>
+          </div>
+        </div>
+        <div class="ability-tag">✨ <b>Umiejętność:</b> Fokus — przez 2s następny strzał przebija ściany</div>
+      </div>
+
+    </div>
+
+    <div class="note">
+      <strong>💡 Propozycja na przyszłość:</strong> Banan 🍌 mógłby być 5. postacią z rolą "sabotażysty" — rzuca skórkami, które spowalniają wrogów przy deptaniu. Pasuje do wasego pomysłu z umiejętnościami specjalnymi!
+    </div>
+  </div>
+
+  <!-- 3. MODYFIKATORY -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2>System modyfikatorów</h2>
+    </div>
+
+    <p style="font-size:13px;color:#aaa;margin-bottom:16px;">
+      Po każdej rundzie gracze na miejscach <b>3. i 4.</b> wybierają ulepszenie. Gracze na miejscach <b>1. i 2.</b> nie dostają nic — efekt anty-snowball. Wybierają w kolejności od ostatniego miejsca.
+    </p>
+
+    <div class="mod-grid">
+      <div class="mod-card">
+        <div class="mod-icon">↩️</div>
+        <div class="mod-name">Odbijające pociski</div>
+        <div class="mod-desc">Twoje pociski odbijają się od ścian raz przed wygaśnięciem.</div>
+      </div>
+      <div class="mod-card">
+        <div class="mod-icon">👟</div>
+        <div class="mod-name">Przyspieszenie</div>
+        <div class="mod-desc">+20% do prędkości poruszania się przez całą rundę.</div>
+      </div>
+      <div class="mod-card">
+        <div class="mod-icon">☠️</div>
+        <div class="mod-name">Ślad trucizny</div>
+        <div class="mod-desc">Za tobą zostaje trujący ślad. Wrogowie tracą HP wchodząc na niego.</div>
+      </div>
+      <div class="mod-card">
+        <div class="mod-icon">🔴</div>
+        <div class="mod-name">Kradzież HP</div>
+        <div class="mod-desc">Każde trafienie wrogiego owocka leczy cię o 10% zadanych obrażeń.</div>
+      </div>
+      <div class="mod-card">
+        <div class="mod-icon">💣</div>
+        <div class="mod-name">Eksplodujące pociski</div>
+        <div class="mod-desc">Pociski eksplodują przy uderzeniu, robiąc obrażenia w małym promieniu.</div>
+      </div>
+      <div class="mod-card">
+        <div class="mod-icon">🐌</div>
+        <div class="mod-name">Lepkie pociski</div>
+        <div class="mod-desc">Trafiony wróg jest spowolniony przez 2 sekundy.</div>
+      </div>
+      <div class="mod-card">
+        <div class="mod-icon">🛡️</div>
+        <div class="mod-name">Pancerz</div>
+        <div class="mod-desc">Pierwsze trafienie w rundzie jest zignorowane (blok jednorazowy).</div>
+      </div>
+      <div class="mod-card">
+        <div class="mod-icon">🌪️</div>
+        <div class="mod-name">Wirujące pociski</div>
+        <div class="mod-desc">Pociski lecą po spirali — trudniejsze do przewidzenia dla wroga.</div>
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>💡 Pomysł:</strong> Można podzielić modyfikatory na 2 kategorie: <b>ofensywne</b> i <b>defensywne</b> — gracz wybiera jedną kartę z każdej kategorii co 2 rundy. To daje więcej kontroli bez zwiększania kompleksowości.
+    </div>
+  </div>
+
+  <!-- 4. SPECJALNE POWER-UPY (pomysły) -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2>Super-ulepszenia (dla ostatniego gracza)</h2>
+    </div>
+
+    <p style="font-size:13px;color:#aaa;margin-bottom:16px;">
+      Co kilka rund gracz na ostatnim miejscu dostaje potężne Super-ulepszenie — widoczne wizualnie na owocku. Zmienia styl gry i wyrównuje szanse.
+    </p>
+
+    <div class="powerup-grid">
+      <div class="powerup pw-fire">
+        <h4>🔥 Chili</h4>
+        <p>Owocek staje się podpalony. Każdy atak nakłada efekt <b>palenia</b> na wroga — obrażenia przez czas.</p>
+      </div>
+      <div class="powerup pw-ice">
+        <h4>🧊 Zamarznięty owocek</h4>
+        <p>Owocek ślizga się, co utrudnia kontrolę, ale <b>gnije kilka sekund później</b> niż inni w tej rundzie.</p>
+      </div>
+      <div class="powerup pw-poison">
+        <h4>☢️ Radioaktywny</h4>
+        <p>Owocek otacza się aurą, która <b>spowalnia wrogów</b> wchodzących w bliski kontakt.</p>
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>💡 Propozycja:</strong> Warto żeby Super-ulepszenie było wyraźnie widoczne — np. owocek zmienia kolor, ma cząsteczki/efekty wokół. To pomaga innym graczom wiedzieć, że muszą uważać!
+    </div>
+  </div>
+
+  <!-- 5. MUTATORY -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2>Losowe mutatory mapy</h2>
+    </div>
+
+    <p style="font-size:13px;color:#aaa;margin-bottom:16px;">
+      Mała szansa na pojawienie się losowego mutatora na początku rundy. Wszyscy gracze są dotknięci jednakowo — to nie faworyzuje nikogo, ale totalnie zmienia dynamikę.
+    </p>
+
+    <div class="mutator-list">
+      <div class="mutator">
+        <div class="mutator-icon">☄️</div>
+        <div class="mutator-body">
+          <h4>Deszcz meteorytów</h4>
+          <p>Co kilka sekund losowe miejsca na mapie są bombardowane. Gracze muszą ciągle się ruszać.</p>
+        </div>
+      </div>
+      <div class="mutator">
+        <div class="mutator-icon">🔥</div>
+        <div class="mutator-body">
+          <h4>Płonące strefy</h4>
+          <p>Części mapy są w ogniu — stanie na nich zadaje stały DPS. Bezpieczna strefa się kurczy.</p>
+        </div>
+      </div>
+      <div class="mutator">
+        <div class="mutator-icon">🧊</div>
+        <div class="mutator-body">
+          <h4>Lodowa mapa</h4>
+          <p>Cała mapa pokrywa się lodem — każdy się ślizga, co zmienia precyzję ruchu i strzelania.</p>
+        </div>
+      </div>
+      <div class="mutator">
+        <div class="mutator-icon">🔬</div>
+        <div class="mutator-body">
+          <h4>Mikro / Makro</h4>
+          <p>Losowo: wszyscy stają się dużo mniejsi (trudniej trafić, ale map wydaje się ogromna) lub dużo więksi (łatwiej trafić, ciasno na mapie).</p>
+        </div>
+      </div>
+      <div class="mutator">
+        <div class="mutator-icon">🌑</div>
+        <div class="mutator-body">
+          <h4>Ciemność</h4>
+          <p>Mapa jest ciemna — każdy widzi tylko niewielki okrąg wokół siebie. Bliskość jest ryzykowna.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. SOK -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2>Mechanika soku (Hit Effects)</h2>
+    </div>
+
+    <p style="font-size:13px;color:#aaa;margin-bottom:16px;">
+      Po trafieniu owocek tryska sokiem. Sok opada na ziemię i ma różne efekty w zależności od postaci. Dodaje strategiczny wymiar — kontrolujesz teren sokiem.
+    </p>
+
+    <table class="juice-table">
+      <thead>
+        <tr>
+          <th>Owocek</th>
+          <th>Kolor soku</th>
+          <th>Efekt na ziemi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>🍓 Truskawka</td>
+          <td><span class="tag red">Czerwony</span></td>
+          <td>Neutralny — lekko klei, minimalne spowolnienie</td>
+        </tr>
+        <tr>
+          <td>🍇 Winogrono</td>
+          <td><span class="tag" style="color:#a855f7;border-color:rgba(168,85,247,0.3);background:rgba(168,85,247,0.05)">Fioletowy</span></td>
+          <td>Spowalnia wrogów wchodzących w plamę przez 1.5s</td>
+        </tr>
+        <tr>
+          <td>🍍 Ananas</td>
+          <td><span class="tag yellow">Żółty</span></td>
+          <td>Lekko parzy — mały DoT (obrażenia w czasie) dla wrogów</td>
+        </tr>
+        <tr>
+          <td>🍊 Pomarańcza</td>
+          <td><span class="tag" style="color:#f97316;border-color:rgba(249,115,22,0.3);background:rgba(249,115,22,0.05)">Pomarańczowy</span></td>
+          <td>Zmniejsza zasięg wrogów wchodzących w plamę przez 2s</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note">
+      <strong>💡 Uwaga techniczna:</strong> Plamy soku powinny znikać po kilku sekundach, żeby mapa nie była całkowicie zalana. Można też dodać efekt wizualny (kolor plamy blednie przy zanikaniu).
+    </div>
+  </div>
+
+  <!-- 7. MAPA -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <h2>Mapy i środowisko</h2>
+    </div>
+
+    <div class="card">
+      <h3>Zasady generowania map</h3>
+      <ul style="margin-top:8px;">
+        <li>Mapa jest <b>losowa każdą rundę</b> — różne układy przeszkód, platform i korytarzy</li>
+        <li>Rozmiar mapy musi sprzyjać walce — nie za duży (snajper dominuje) ani za mały (tank dominuje)</li>
+        <li>Gracze spawnują w równej odległości od siebie (spawn points symetryczne)</li>
+        <li>Minimalne wymaganie: 4 otwarte przestrzenie + kilka wąskich przejść dla różnorodności walki</li>
+      </ul>
+      <div class="suggest" style="margin-top:14px;">
+        <span class="suggest-icon">💡</span>
+        Pomysł na późniejszy etap: kilka predefiniowanych "tematów" mapy (las, miasto, przestrzeń kosmiczna) z losowym układem w ramach każdego tematu.
+      </div>
+    </div>
+  </div>
+
+  <!-- STATUS / PRIORYTET -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <h2>Co robić najpierw — priorytety</h2>
+    </div>
+
+    <div class="card">
+      <div class="round-flow">
+        <div class="round-step">
+          <div class="step-dot" style="border-color:var(--accent-green);color:var(--accent-green);">MVP</div>
+          <div class="step-content">
+            <h4>Minimum Viable Product</h4>
+            <p>4 postacie z różnymi statystykami · ruch i strzelanie · 1 mapa · mechanika gnicia · koniec rundy z rankingiem</p>
+          </div>
+        </div>
+        <div class="round-step">
+          <div class="step-dot" style="border-color:var(--accent-yellow);color:var(--accent-yellow);">v1</div>
+          <div class="step-content">
+            <h4>Wersja 1.0</h4>
+            <p>System modyfikatorów · umiejętności specjalne owocków · losowe mapy · mechanika soku · efekty wizualne</p>
+          </div>
+        </div>
+        <div class="round-step">
+          <div class="step-dot" style="border-color:var(--accent-orange);color:var(--accent-orange);">v2</div>
+          <div class="step-content">
+            <h4>Wersja 2.0</h4>
+            <p>Mutatory mapy · Super-ulepszenia dla ostatniego gracza · nowe postacie (Banan?) · balans na podstawie testów</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-left">
+    <b>Fruit Game</b> — Game Design Document<br>
+    Opracowanie: projekt własny &nbsp;·&nbsp; Wszystkie pomysły zastrzeżone
+  </div>
+  <span class="version-tag">GDD v1.0 · 2025</span>
+</div>
+
+</body>
+</html>

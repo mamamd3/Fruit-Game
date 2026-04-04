@@ -1,0 +1,25 @@
+# Godot 4 cache - generowane automatycznie
+.godot/
+
+# Import metadane - generowane przez Godot
+*.import
+
+# Wyjątek: icon.svg.import potrzebny do buildu
+!icon.svg.import
+
+# System
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Edytory
+.vscode/
+*.swp
+*~
+
+# Build
+export/
+builds/
+
+# Logi
+*.log
