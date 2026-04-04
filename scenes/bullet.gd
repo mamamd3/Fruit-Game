@@ -1,10 +1,12 @@
 extends Area2D
 
-var direction: Vector2
+var velocity: Vector2
+const GRAVITY = 75.0
 
 func setup(pos: Vector2, dir: Vector2):
 	position = pos + dir * 12
-	direction = dir
-	
+	velocity = dir * 180
+
 func _physics_process(delta: float) -> void:
-	position += direction * 30 * delta
+	velocity.y += GRAVITY * delta
+	position += velocity * delta
