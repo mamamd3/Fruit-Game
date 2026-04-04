@@ -1,12 +1,110 @@
-[gd_scene load_steps=3 format=3 uid="uid://p4843dya0ydt"]
+[gd_scene load_steps=6 format=3 uid="uid://gt2yka256xqx"]
 
-[ext_resource type="Script" path="res://scripts/core/GameManager.gd" id="1_02nmh"]
-[ext_resource type="PackedScene" uid="uid://uwiv67bpnqmq" path="res://scenes/characters/Grape.tscn" id="1_g1ywk"]
+[ext_resource type="PackedScene" uid="uid://cog1lnh16jwd3" path="res://Scenes/strawberry.tscn" id="1_btoa8"]
+[ext_resource type="PackedScene" uid="uid://dxwakrvs65rur" path="res://Scenes/grape.tscn" id="2_vrmt7"]
+
+[sub_resource type="GDScript" id="GDScript_oamj1"]
+script/source = "extends Node
+# GameManager.gd v3 — anty-snowball + matchmaking stub + sygnaly
+
+signal round_started(round_num: int)
+signal round_ended(winner_id: int)
+signal session_created(session_id: String)
+
+const ANTI_SNOWBALL_TOP : int = 2
+
+var round_number : int = 0
+var scores       : Dictionary = {}
+var _session_id  : String = \"\"
+
+func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
+
+func start_round() -> void:
+	round_number += 1
+	_apply_anti_snowball()
+	emit_signal(\"round_started\", round_number)
+
+func _apply_anti_snowball() -> void:
+	if scores.is_empty(): return
+	var sorted_ids := scores.keys()
+	sorted_ids.sort_custom(func(a,b): return scores[a] > scores[b])
+	for i in sorted_ids.size():
+		var pid : int = sorted_ids[i]
+		var node := _find_player(pid)
+		if node and i < ANTI_SNOWBALL_TOP:
+			node.set_meta(\"anti_snowball\", true)
+			push_warning(\"AntiSnowball: gracz %d bez modyfikatorow\" % pid)
+
+func register_kill(killer_id: int, victim_id: int) -> void:
+	scores[killer_id] = scores.get(killer_id, 0) + 1
+	var alive := get_tree().get_nodes_in_group(\"players\").filter(
+		func(p): return p.get(\"current_hp\", 0) > 0)
+	if alive.size() == 1:
+		emit_signal(\"round_ended\", alive[0].get_meta(\"player_id\", -1))
+
+func create_session() -> void:
+	_session_id = \"session_%d\" % Time.get_ticks_msec()
+	emit_signal(\"session_created\", _session_id)
+	push_warning(\"WebSocket stub — session_id: \" + _session_id)
+
+func _find_player(pid: int) -> Node:
+	for p in get_tree().get_nodes_in_group(\"players\"):
+		if p.get_meta(\"player_id\",-1) == pid:
+			return p
+	return null
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_11geg"]
+size = Vector2(384, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jmkyb"]
+size = Vector2(92, 17)
 
 [node name="Main Game" type="Node2D"]
-script = ExtResource("1_02nmh")
+script = SubResource("GDScript_oamj1")
 
-[node name="Grape" parent="." instance=ExtResource("1_g1ywk")]
+[node name="Ground" type="StaticBody2D" parent="."]
+position = Vector2(-192, 68)
+
+[node name="ColorRect" type="ColorRect" parent="Ground"]
+offset_right = 384.0
+offset_bottom = 40.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+position = Vector2(192, 20)
+shape = SubResource("RectangleShape2D_11geg")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(3, 3)
+
+[node name="Strawberry" parent="." instance=ExtResource("1_btoa8")]
+position = Vector2(-50, 45)
+
+[node name="Platform" type="StaticBody2D" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="Platform"]
+offset_left = -171.0
+offset_top = 28.0
+offset_right = -79.0
+offset_bottom = 45.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform"]
+position = Vector2(-125, 36.5)
+shape = SubResource("RectangleShape2D_jmkyb")
+
+[node name="Platform2" type="StaticBody2D" parent="."]
+position = Vector2(223, 18)
+
+[node name="ColorRect" type="ColorRect" parent="Platform2"]
+offset_left = -171.0
+offset_top = 28.0
+offset_right = -79.0
+offset_bottom = 45.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform2"]
+position = Vector2(-125, 36.5)
+shape = SubResource("RectangleShape2D_jmkyb")
+
+[node name="Grape" parent="." instance=ExtResource("2_vrmt7")]
+position = Vector2(22, 45)

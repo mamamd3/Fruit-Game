@@ -1,67 +1,35 @@
 # 🍓 Fruit Game
 
-**2D PvP arena shooter** w Godot 4.3 — steruj owocowym wojownikiem i strzelaj sokiem we wrogów.
+**Silnik:** Godot 4.3 stable  
+**Wersja:** v3 PRODUKCYJNA  
+**Data:** 2026-04-04  
 
-## Postacie
+Wieloosobowa gra akcji PvP — owocowe postacie walczą na losowych mapach, gniją z upływem czasu i ewoluują dzięki systemowi modyfikatorów.
 
-| Postać | HP | SPD | Fire Rate | DMG | Styl |
-|--------|-----|-----|-----------|-----|------|
-| 🍇 Grape | 70 | 220 | 0.2s | 10 | Szybkostrzelny snajper |
-| 🍊 Orange | 90 | 240 | 0.35s | 15 | Zrównoważony |
-| 🍓 Strawberry | 100 | 200 | 0.5s | 20 | Klasyczny |
-| 🍍 Pineapple | 150 | 160 | 0.8s | 35 | Powolny tank |
+## Postacie (GDD v1.0)
 
-## Mechaniki
+| Postać | HP | SPD | DMG | Fire Rate | Skill |
+|---|---|---|---|---|---|
+| 🍓 Strawberry | 100 | 200 | 20 | 0.5s | Dash |
+| 🍇 Grape | 70 | 220 | 10 | 0.2s | Grad winogron |
+| 🍍 Pineapple | 150 | 160 | 35 | 0.8s | Kolce |
+| 🍊 Orange | 90 | 240 | 15 | 0.35s | Fokus |
 
-- **Gnicie** — każda postać gnije z czasem (rot_progress), przyspieszając przy końcu
-- **Object Pool** — 50 pocisków w puli, zero skoków GC
-- **Modyfikatory pocisków** — BounceShots, StickyShots, ExplosiveShots
-- **Anti-snowball** — liderzy dostają utrudnienia w kolejnych rundach
-- **State Machine** — IDLE / MOVE / SHOOT / HIT / DEAD
-
-## Sterowanie
-
-| Akcja | Klawisz |
-|-------|---------|
-| Ruch | WASD |
-| Strzał | LPM (w kierunku kursora) |
-
-## Struktura projektu
+## Architektura
 
 ```
-Fruit-Game/
-├── scenes/
-│   ├── characters/       # Grape, Orange, Pineapple, Strawberry
-│   ├── weapons/          # Bullet
-│   └── main_game.tscn    # Główna scena
-├── scripts/
-│   ├── characters/       # Logika postaci
-│   ├── core/             # GameManager, StateMachine, RotManager
-│   ├── map/              # MapGenerator
-│   ├── modifiers/        # GameModifier
-│   └── weapons/          # Bullet, BulletPool
-├── assets/
-│   ├── sprites/          # Sprite sheety postaci (TODO)
-│   └── sounds/           # Dźwięki (TODO)
-└── docs/
-    └── fruit-game-gdd.html  # Game Design Document
+scripts/
+  characters/   Strawberry, Grape, Pineapple, Orange
+  core/         GameManager, RotManager, StateMachine
+  weapons/      BulletPool, Bullet
+  modifiers/    GameModifier (6 modów)
+  map/          MapGenerator (seed + mutatory)
+scenes/characters/   .tscn z GPUParticles2D
+assets/sprites/characters/   PNG 64x64 (5 animacji)
 ```
 
-## Status
+## Roadmap
 
-- [x] Logika postaci (ruch, strzelanie, gnicie, cząsteczki)
-- [x] Object Pool pocisków
-- [x] State Machine
-- [x] GameManager (rundy, scoring, anti-snowball)
-- [x] HUD (HP, wynik, runda)
-- [ ] Sprite sheety / animacje
-- [ ] Mapa z kolizjami
-- [ ] Multiplayer (WebSocket)
-
-## Uruchomienie
-
-1. Otwórz projekt w **Godot 4.3**
-2. Poczekaj na import zasobów
-3. F5 — uruchom z `scenes/main_game.tscn`
-
-Gracz 1 (Grape): WASD + LPM
+- [x] v3 — BulletPool + StateMachine + GPUParticles2D  
+- [ ] v4 — WebSocket multiplayer, HUD, testy GUT  
+- [ ] v5 — BalanceSimulator AI-vs-AI, release build  

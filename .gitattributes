@@ -1,10 +1,2 @@
-# Normalizuj końce linii na LF dla wszystkich plików tekstowych
+# Normalize EOL for all files that Git considers text files.
 * text=auto eol=lf
-
-# Pliki binarne - bez konwersji
-*.png binary
-*.jpg binary
-*.ogg binary
-*.wav binary
-*.mp3 binary
-*.import binary
