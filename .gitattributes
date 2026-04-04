@@ -1,0 +1,10 @@
+# Normalizuj końce linii na LF dla wszystkich plików tekstowych
+* text=auto eol=lf
+
+# Pliki binarne - bez konwersji
+*.png binary
+*.jpg binary
+*.ogg binary
+*.wav binary
+*.mp3 binary
+*.import binary
