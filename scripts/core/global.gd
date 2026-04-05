@@ -1,5 +1,7 @@
 extends Node
 
+signal kill_feed_message(text: String)
+
 var player1_character = ""
 var player2_character = ""
 var player3_character = ""
@@ -151,3 +153,5 @@ func take_damage(target: String, amount: float, reason: String = ""):
 	else:
 		print(target + " HP: " + str(characters[target]["hp"]) + " → " + str(characters[target]["hp"] - amount) + " (" + reason + ")")
 	characters[target]["hp"] -= amount
+	var msg = reason + "  →  " + target + " -" + str(int(amount)) + " HP"
+	kill_feed_message.emit(msg)

@@ -20,8 +20,10 @@ var character_scenes = {
 }
 
 var bullet_scenes = {}
+var kill_feed_script = preload("res://scripts/ui/kill_feed.gd")
 
 func _ready():
+	_setup_kill_feed()
 	Global.game_started = true
 	# Print modyfikatorów na start rundy
 	print("=== RUNDA " + str(Global.round_number) + " ===")
@@ -46,6 +48,18 @@ func _spawn_player(character_name: String, spawn_pos: Vector2, player_prefix: St
 	bullet_scenes[player_prefix] = data["bullet"]
 	player.shoot.connect(func(pos, dir): _on_shoot(pos, dir, player_prefix))
 	$Players.add_child(player)
+
+func _setup_kill_feed():
+	var canvas = CanvasLayer.new()
+	canvas.layer = 10
+	add_child(canvas)
+	var feed = VBoxContainer.new()
+	feed.script = kill_feed_script
+	feed.anchor_right = 1.0
+	feed.offset_left = 4
+	feed.offset_top = 4
+	feed.offset_right = -4
+	canvas.add_child(feed)
 
 func _on_shoot(pos: Vector2, dir: Vector2, player_prefix: String) -> void:
 	var bullet = bullet_scenes[player_prefix].instantiate() as Area2D
