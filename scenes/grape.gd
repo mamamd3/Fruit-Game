@@ -3,6 +3,7 @@ extends CharacterBody2D
 @onready var CoyoteTimer: Timer = $Coyote
 @onready var JumpBufferTimer: Timer = $JumpBufferTimer
 @onready var Reloading: Timer = $ReloadTime
+@onready var HealthBar: ProgressBar = $ProgressBar
 signal shoot(pos: Vector2, dir: Vector2)
 
 # ← TO JEDYNE CO ZMIENIASZ MIĘDZY POSTACIAMI
@@ -26,6 +27,9 @@ func _ready():
 		Global.reset_all()
 	max_speed = Global.characters[character_name]["speed"]
 	Reloading.wait_time = Global.characters[character_name]["fire_rate"]
+	# Ustaw max HP
+	HealthBar.max_value = Global.base_characters[character_name]["hp"]
+	HealthBar.value = Global.characters[character_name]["hp"]
 
 func get_input():
 	if Input.is_action_just_pressed(action_shoot) and Reloading.is_stopped():
@@ -37,6 +41,7 @@ func die():
 	Global.death_order.append(character_name)  # ← brakowało tego
 	queue_free()
 func _physics_process(delta: float) -> void:
+	HealthBar.value = Global.characters[character_name]["hp"]
 	if Global.characters[character_name]["hp"] <= 0:
 		die()
 		return

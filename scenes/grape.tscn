@@ -78,4 +78,14 @@ shape = SubResource("RectangleShape2D_mhe14")
 wait_time = 0.5
 one_shot = true
 
+[node name="ProgressBar" type="ProgressBar" parent="."]
+texture_filter = 1
+offset_left = -8.0
+offset_top = -14.0
+offset_right = 8.0
+offset_bottom = -10.0
+max_value = 150.0
+value = 150.0
+show_percentage = false
+
 [connection signal="body_entered" from="Hitbox" to="." method="_on_hitbox_body_entered"]
