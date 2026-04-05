@@ -25,7 +25,7 @@ position = Vector2(192, 20)
 shape = SubResource("RectangleShape2D_11geg")
 
 [node name="Sprite2D" type="Sprite2D" parent="Terrain/Ground"]
-position = Vector2(199, 51)
+position = Vector2(204, 50)
 rotation = 1.5708
 scale = Vector2(0.1, 0.540986)
 texture = ExtResource("2_rfufc")
