@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://d2ob2fqqusk74"]
+[gd_scene load_steps=3 format=3 uid="uid://d2ob2fqqusk74"]
 
 [ext_resource type="Script" path="res://scripts/ui/choose_character.gd" id="1_5lo5d"]
+[ext_resource type="FontFile" path="res://fonts/kirifont/Kirifont.tres" id="2_t0qdm"]
 
 [node name="ChooseCharacter" type="Control"]
 layout_mode = 3
@@ -22,32 +23,26 @@ color = Color(0.385493, 0.385492, 0.385492, 1)
 
 [node name="Orange2" type="Button" parent="."]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
+anchors_preset = 4
 anchor_top = 0.5
-anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 224.0
-offset_top = -24.0
-offset_right = 438.0
-offset_bottom = 29.0
-grow_horizontal = 2
+offset_left = 600.0
+offset_top = -200.0
+offset_right = 850.0
+offset_bottom = 200.0
 grow_vertical = 2
 theme_override_font_sizes/font_size = 32
 text = "Orange"
 
 [node name="Pineapple2" type="Button" parent="."]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
+anchors_preset = 4
 anchor_top = 0.5
-anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 284.0
-offset_top = 122.0
-offset_right = 386.0
-offset_bottom = 175.0
-grow_horizontal = 2
+offset_left = 900.0
+offset_top = -200.0
+offset_right = 1150.0
+offset_bottom = 200.0
 grow_vertical = 2
 theme_override_font_sizes/font_size = 32
 text = "Pineapple
@@ -68,32 +63,27 @@ horizontal_alignment = 1
 
 [node name="Strawberry2" type="Button" parent="."]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
+anchors_preset = 4
 anchor_top = 0.5
-anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -467.0
-offset_top = -24.0
-offset_right = -253.0
-offset_bottom = 29.0
-grow_horizontal = 2
+offset_top = -199.0
+offset_right = 250.0
+offset_bottom = 201.0
 grow_vertical = 2
-theme_override_font_sizes/font_size = 32
-text = "STRAWBERRY"
+theme_override_fonts/font = ExtResource("2_t0qdm")
+theme_override_font_sizes/font_size = 24
+text = "Strawberry"
+clip_text = true
 
 [node name="Grape2" type="Button" parent="."]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
+anchors_preset = 4
 anchor_top = 0.5
-anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -407.0
-offset_top = 122.0
-offset_right = -305.0
-offset_bottom = 175.0
-grow_horizontal = 2
+offset_left = 300.0
+offset_top = -199.0
+offset_right = 550.0
+offset_bottom = 201.0
 grow_vertical = 2
 theme_override_font_sizes/font_size = 32
 text = "Grape
