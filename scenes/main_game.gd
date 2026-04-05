@@ -23,6 +23,10 @@ var bullet_scenes = {}
 
 func _ready():
 	Global.game_started = true
+	# Print modyfikatorów na start rundy
+	print("=== RUNDA " + str(Global.round_number) + " ===")
+	for character in Global.modifiers:
+		print(character + " modyfikatory: " + str(Global.modifiers[character]))
 	_spawn_player(Global.player1_character, $Players/SpawnPoint1.position, "p1")
 	_spawn_player(Global.player2_character, $Players/SpawnPoint2.position, "p2")
 	_spawn_player(Global.player3_character, $Players/SpawnPoint3.position, "p3")
@@ -53,6 +57,8 @@ func _on_gnicie_timeout() -> void:
 		return
 	Global.round_over = true
 	Global.winner = ""
+	Global.build_ranking()   # ← dodaj to
+	Global.assign_points()   # ← i to
 	get_tree().change_scene_to_file("res://Scenes/round_ended.tscn")
 
 func _physics_process(_delta: float) -> void:

@@ -78,7 +78,7 @@ shape = SubResource("RectangleShape2D_mhe14")
 wait_time = 0.5
 one_shot = true
 
-[node name="ProgressBar" type="ProgressBar" parent="."]
+[node name="HealthBar" type="ProgressBar" parent="."]
 texture_filter = 1
 offset_left = -8.0
 offset_top = -14.0

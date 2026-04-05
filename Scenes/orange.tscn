@@ -76,7 +76,7 @@ position = Vector2(0, -0.190115)
 scale = Vector2(0.809116, 0.838023)
 shape = SubResource("RectangleShape2D_mhe14")
 
-[node name="ProgressBar" type="ProgressBar" parent="."]
+[node name="HealthBar" type="ProgressBar" parent="."]
 texture_filter = 1
 offset_left = -8.0
 offset_top = -14.0

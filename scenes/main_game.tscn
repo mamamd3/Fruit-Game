@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://gt2yka256xqx"]
+[gd_scene load_steps=5 format=3 uid="uid://gt2yka256xqx"]
 
 [ext_resource type="Script" path="res://Scenes/main_game.gd" id="1_wrak2"]
+[ext_resource type="Texture2D" uid="uid://0gu7iobuyx6b" path="res://Sprites/base.png" id="2_rfufc"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_11geg"]
 size = Vector2(384, 40)
@@ -19,13 +20,15 @@ zoom = Vector2(3, 3)
 [node name="Ground" type="StaticBody2D" parent="Terrain" groups=["Terrain"]]
 position = Vector2(-192, 68)
 
-[node name="ColorRect" type="ColorRect" parent="Terrain/Ground"]
-offset_right = 384.0
-offset_bottom = 40.0
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Terrain/Ground"]
 position = Vector2(192, 20)
 shape = SubResource("RectangleShape2D_11geg")
+
+[node name="Sprite2D" type="Sprite2D" parent="Terrain/Ground"]
+position = Vector2(199, 51)
+rotation = 1.5708
+scale = Vector2(0.1, 0.540986)
+texture = ExtResource("2_rfufc")
 
 [node name="Platform" type="StaticBody2D" parent="Terrain" groups=["Terrain"]]
 
@@ -69,7 +72,7 @@ position = Vector2(-53, 47)
 position = Vector2(173, 31)
 
 [node name="Gnicie" type="Timer" parent="."]
-wait_time = 3.0
+wait_time = 120.0
 one_shot = true
 
 [connection signal="timeout" from="Gnicie" to="." method="_on_gnicie_timeout"]

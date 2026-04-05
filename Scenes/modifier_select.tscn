@@ -1,0 +1,59 @@
+[gd_scene load_steps=2 format=3 uid="uid://mce3g25e1rel"]
+
+[ext_resource type="Script" path="res://Scenes/modifier_select.gd" id="1_tr52b"]
+
+[node name="modifier_select" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_tr52b")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.497474, 0.497474, 0.497474, 1)
+
+[node name="PickingLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 23.0
+grow_horizontal = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -16.0
+offset_top = -4.0
+offset_right = 16.0
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1, 1.073)
+
+[node name="Card1" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="Card2" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="Card3" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+
+[connection signal="pressed" from="HBoxContainer/Card1" to="." method="_on_card_1_pressed"]
+[connection signal="pressed" from="HBoxContainer/Card2" to="." method="_on_card_2_pressed"]
+[connection signal="pressed" from="HBoxContainer/Card3" to="." method="_on_card_3_pressed"]
