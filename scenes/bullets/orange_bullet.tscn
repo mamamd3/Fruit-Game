@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://kcmiyxikpow7"]
+
+[ext_resource type="Script" path="res://scripts/bullets/orange_bullet.gd" id="1_g4xy1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mebla"]
+size = Vector2(7, 7)
+
+[node name="orange_bullet" type="Area2D"]
+script = ExtResource("1_g4xy1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(3.5, 3.5)
+shape = SubResource("RectangleShape2D_mebla")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_right = 7.0
+offset_bottom = 7.0
+color = Color(0.948352, 0.47104, 1.92523e-07, 1)
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

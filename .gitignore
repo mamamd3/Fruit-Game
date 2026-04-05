@@ -4,8 +4,12 @@
 # Import metadane - generowane przez Godot
 *.import
 
-# Wyjątek: icon.svg.import potrzebny do buildu
+# Wyjątek: pliki .import potrzebne do buildu
 !icon.svg.import
+!assets/sprites/*.import
+
+# Addony / binaria pluginów
+addons/
 
 # System
 .DS_Store

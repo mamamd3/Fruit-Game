@@ -1,12 +1,78 @@
-[gd_scene load_steps=3 format=3 uid="uid://p4843dya0ydt"]
+[gd_scene load_steps=5 format=3 uid="uid://gt2yka256xqx"]
 
-[ext_resource type="Script" path="res://scripts/core/GameManager.gd" id="1_02nmh"]
-[ext_resource type="PackedScene" uid="uid://uwiv67bpnqmq" path="res://scenes/characters/Grape.tscn" id="1_g1ywk"]
+[ext_resource type="Script" path="res://scripts/core/main_game.gd" id="1_wrak2"]
+[ext_resource type="Texture2D" uid="uid://0gu7iobuyx6b" path="res://assets/sprites/base.png" id="2_rfufc"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_11geg"]
+size = Vector2(384, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jmkyb"]
+size = Vector2(92, 17)
 
 [node name="Main Game" type="Node2D"]
-script = ExtResource("1_02nmh")
-
-[node name="Grape" parent="." instance=ExtResource("1_g1ywk")]
+script = ExtResource("1_wrak2")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(3, 3)
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="Ground" type="StaticBody2D" parent="Terrain" groups=["Terrain"]]
+position = Vector2(-192, 68)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Terrain/Ground"]
+position = Vector2(192, 20)
+shape = SubResource("RectangleShape2D_11geg")
+
+[node name="Sprite2D" type="Sprite2D" parent="Terrain/Ground"]
+position = Vector2(199, 51)
+rotation = 1.5708
+scale = Vector2(0.1, 0.540986)
+texture = ExtResource("2_rfufc")
+
+[node name="Platform" type="StaticBody2D" parent="Terrain" groups=["Terrain"]]
+
+[node name="ColorRect" type="ColorRect" parent="Terrain/Platform"]
+offset_left = -171.0
+offset_top = 28.0
+offset_right = -79.0
+offset_bottom = 45.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Terrain/Platform"]
+position = Vector2(-125, 36.5)
+shape = SubResource("RectangleShape2D_jmkyb")
+
+[node name="Platform2" type="StaticBody2D" parent="Terrain" groups=["Terrain"]]
+position = Vector2(223, 18)
+
+[node name="ColorRect" type="ColorRect" parent="Terrain/Platform2"]
+offset_left = -171.0
+offset_top = 28.0
+offset_right = -79.0
+offset_bottom = 45.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Terrain/Platform2"]
+position = Vector2(-125, 36.5)
+shape = SubResource("RectangleShape2D_jmkyb")
+
+[node name="Bullets" type="Node2D" parent="."]
+
+[node name="Players" type="Node" parent="."]
+
+[node name="SpawnPoint1" type="Marker2D" parent="Players"]
+position = Vector2(91, 19)
+
+[node name="SpawnPoint2" type="Marker2D" parent="Players"]
+position = Vector2(-121, 7)
+
+[node name="SpawnPoint3" type="Marker2D" parent="Players"]
+position = Vector2(-53, 47)
+
+[node name="SpawnPoint4" type="Marker2D" parent="Players"]
+position = Vector2(173, 31)
+
+[node name="Gnicie" type="Timer" parent="."]
+wait_time = 120.0
+one_shot = true
+
+[connection signal="timeout" from="Gnicie" to="." method="_on_gnicie_timeout"]

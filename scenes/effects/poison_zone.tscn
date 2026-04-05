@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://blk237e2m4qqt"]
+
+[ext_resource type="Script" path="res://scripts/effects/poison_zone.gd" id="1_h028q"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6gxk4"]
+
+[node name="poison_zone" type="Area2D"]
+script = ExtResource("1_h028q")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_6gxk4")
