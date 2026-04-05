@@ -20,21 +20,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.385493, 0.385492, 0.385492, 1)
 
-[node name="Label" type="Label" parent="."]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = 151.0
-offset_top = 1.0
-offset_right = 500.0
-offset_bottom = 46.0
-grow_horizontal = 2
-theme_override_font_sizes/font_size = 32
-text = "Player 2"
-horizontal_alignment = 1
-
-[node name="Strawberry" type="Button" parent="."]
+[node name="Orange2" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -48,9 +34,9 @@ offset_bottom = 29.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 32
-text = "STRAWBERRY"
+text = "Orange"
 
-[node name="Grape" type="Button" parent="."]
+[node name="Pineapple2" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -64,21 +50,20 @@ offset_bottom = 175.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 32
-text = "Grape
+text = "Pineapple
 "
 
-[node name="Label2" type="Label" parent="."]
+[node name="PickingLabel" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -540.0
-offset_top = 1.0
-offset_right = -191.0
-offset_bottom = 46.0
+offset_left = -174.5
+offset_right = 174.5
+offset_bottom = 45.0
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 32
-text = "Player 1"
+text = "Player X now choosing"
 horizontal_alignment = 1
 
 [node name="Strawberry2" type="Button" parent="."]
@@ -114,24 +99,7 @@ theme_override_font_sizes/font_size = 32
 text = "Grape
 "
 
-[node name="Play" type="Button" parent="."]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -36.0
-offset_top = -26.5
-offset_right = 36.0
-offset_bottom = 26.5
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 32
-text = "Play"
-
-[connection signal="pressed" from="Strawberry" to="." method="_on_strawberry_pressed"]
-[connection signal="pressed" from="Grape" to="." method="_on_grape_pressed"]
+[connection signal="pressed" from="Orange2" to="." method="_on_orange_2_pressed"]
+[connection signal="pressed" from="Pineapple2" to="." method="_on_pineapple_2_pressed"]
 [connection signal="pressed" from="Strawberry2" to="." method="_on_strawberry_2_pressed"]
 [connection signal="pressed" from="Grape2" to="." method="_on_grape_2_pressed"]
-[connection signal="pressed" from="Play" to="." method="_on_play_pressed"]

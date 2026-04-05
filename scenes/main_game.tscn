@@ -61,3 +61,15 @@ position = Vector2(91, 19)
 
 [node name="SpawnPoint2" type="Marker2D" parent="Players"]
 position = Vector2(-121, 7)
+
+[node name="SpawnPoint3" type="Marker2D" parent="Players"]
+position = Vector2(-53, 47)
+
+[node name="SpawnPoint4" type="Marker2D" parent="Players"]
+position = Vector2(173, 31)
+
+[node name="Gnicie" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+
+[connection signal="timeout" from="Gnicie" to="." method="_on_gnicie_timeout"]

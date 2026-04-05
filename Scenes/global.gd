@@ -1,15 +1,18 @@
 extends Node
 
-var player1_character = "Strawberry"
-var player2_character = "Grape"
+var player1_character = ""
+var player2_character = ""
+var player3_character = ""
+var player4_character = ""
 var round_over = false
-var players_alive = 2
+var game_started = false
+var players_alive = 4
 var winner = ""
-var alive = {
-	"Strawberry": true,
-	"Grape": true
-}
-
+var total_players = 4
+var current_picking_player = 1
+var selected_characters = {}
+var available_characters = []
+var alive = {}
 
 var base_characters = {
 	"Strawberry": {"hp": 200, "speed": 80,  "dmg": 30,  "range": 100, "fire_rate": 0.8},
@@ -22,44 +25,64 @@ var death_order = []
 var ranking = []
 
 func _ready():
+	reset_selection()
 	reset_all()
+
+func reset_selection():
+	available_characters = base_characters.keys()
+	selected_characters = {}
+	current_picking_player = 1
+	player1_character = ""
+	player2_character = ""
+	player3_character = ""
+	player4_character = ""
 
 func reset_all():
 	characters = base_characters.duplicate(true)
-	# Buduj alive dynamicznie z wybranych postaci
 	alive = {}
-	alive[player1_character] = true
-	alive[player2_character] = true
+	if player1_character != "": alive[player1_character] = true
+	if player2_character != "": alive[player2_character] = true
+	if player3_character != "": alive[player3_character] = true
+	if player4_character != "": alive[player4_character] = true
 	round_over = false
+	game_started = false
 	winner = ""
 	death_order = []
 	ranking = []
 
+func pick_character(character_name: String):
+	selected_characters[current_picking_player] = character_name
+	if current_picking_player == 1:
+		player1_character = character_name
+	elif current_picking_player == 2:
+		player2_character = character_name
+	elif current_picking_player == 3:
+		player3_character = character_name
+	elif current_picking_player == 4:
+		player4_character = character_name
+	available_characters.erase(character_name)
+	current_picking_player += 1
+
+func all_picked() -> bool:
+	return current_picking_player > total_players
+
 func build_ranking():
 	ranking = []
-	# Żywy gracz = wygrał = pierwsze miejsce
 	for character in alive:
 		if alive[character]:
 			ranking.append(character)
-	# Martwi w odwrotnej kolejności śmierci
 	var reversed_deaths = death_order.duplicate()
 	reversed_deaths.reverse()
 	for character in reversed_deaths:
 		ranking.append(character)
 
 func _physics_process(_delta: float) -> void:
-	if round_over:
+	if round_over or !game_started:
 		return
 	if alive.values().count(true) == 1:
 		round_over = true
-		# Znajdź zwycięzcę wprost
 		for character in alive:
 			if alive[character]:
 				winner = character
 		build_ranking()
 		get_tree().change_scene_to_file("res://Scenes/round_ended.tscn")
-
-func _on_gnicie_timeout() -> void:
-	round_over = true
-	# Nie budujemy rankingu — w draw.tscn czytasz Global.alive
-	get_tree().change_scene_to_file("res://Scenes/draw.tscn")

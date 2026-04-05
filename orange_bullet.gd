@@ -1,7 +1,7 @@
 extends Area2D
 
 var velocity: Vector2
-var shooter_name = "Grape"  # ← jedyne co zmieniasz między bulletami
+var shooter_name = "Orange"  # ← jedyne co zmieniasz między bulletami
 const GRAVITY = 75.0
 
 func setup(pos: Vector2, dir: Vector2):
