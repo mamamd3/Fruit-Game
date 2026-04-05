@@ -107,6 +107,12 @@ func _speed_mult() -> float:
 func apply_modifier(mod_name: String) -> void:
 	if mod_name not in modifiers: modifiers.append(mod_name)
 
+func apply_poison(dmg_per_tick: int, ticks: int) -> void:
+	for i in ticks:
+		await get_tree().create_timer(1.0).timeout
+		if not is_instance_valid(self) or not state_machine.is_alive(): return
+		take_damage(dmg_per_tick)
+
 func _safe_play(anim: String) -> void:
 	if sprite.sprite_frames != null and sprite.sprite_frames.has_animation(anim):
 		sprite.play(anim)
