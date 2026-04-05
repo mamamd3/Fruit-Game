@@ -1,20 +1,19 @@
-[gd_scene load_steps=3 format=3 uid="uid://dbehg3y0fi1hd"]
+[gd_scene load_steps=4 format=3 uid="uid://dbehg3y0fi1hd"]
 
 [ext_resource type="Script" path="res://scripts/bullets/grape_bullet.gd" id="1_kg3bb"]
+[ext_resource type="Script" path="res://scripts/bullets/bullet_drawer.gd" id="2_bdraw"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_mebla"]
-size = Vector2(7, 7)
+[sub_resource type="CircleShape2D" id="CircleShape2D_grape"]
+radius = 3.0
 
-[node name="grape_bullet" type="Area2D"]
+[node name="grape_bullet" type="Area2D" groups=["Bullet"]]
 script = ExtResource("1_kg3bb")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(3.5, 3.5)
-shape = SubResource("RectangleShape2D_mebla")
+shape = SubResource("CircleShape2D_grape")
 
-[node name="ColorRect" type="ColorRect" parent="."]
-offset_right = 7.0
-offset_bottom = 7.0
-color = Color(0.719091, 0.4851, 0.999153, 1)
+[node name="BulletSprite" type="Node2D" parent="."]
+script = ExtResource("2_bdraw")
+bullet_type = "Grape"
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
