@@ -10,7 +10,7 @@ func _ready():
 func _on_message(text: String):
 	var label = Label.new()
 	label.text = text
-	label.add_theme_font_size_override("font_size", 5)
+	label.add_theme_font_size_override("font_size", 12)
 	label.add_theme_color_override("font_color", Color(1, 1, 1, 0.9))
 	label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.7))
 	label.add_theme_constant_override("shadow_offset_x", 1)
