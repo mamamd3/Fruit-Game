@@ -47,6 +47,14 @@ func _ready():
 	# Ustaw pasek HP
 	health_bar.max_value = Global.base_characters[character_name]["hp"]
 	health_bar.value = Global.characters[character_name]["hp"]
+	var name_label = Label.new()
+	name_label.text = character_name
+	name_label.add_theme_font_size_override("font_size", 4)
+	name_label.add_theme_color_override("font_color", Color(1, 1, 1, 0.8))
+	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_label.position = Vector2(-12, -22)
+	name_label.size = Vector2(24, 8)
+	add_child(name_label)
 func get_input():
 	if Input.is_action_just_pressed(action_shoot) and Reloading.is_stopped():
 		shoot.emit(position, get_local_mouse_position().normalized())
