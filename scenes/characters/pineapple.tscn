@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://cih6tmuexeris"]
+[gd_scene load_steps=4 format=3 uid="uid://cih6tmuexeris"]
 
 [ext_resource type="Script" path="res://scripts/characters/pineapple.gd" id="1_a6o70"]
+[ext_resource type="Script" path="res://scripts/characters/fruit_drawer.gd" id="2_fruit"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mhe14"]
 size = Vector2(20, 19.5463)
@@ -8,13 +9,9 @@ size = Vector2(20, 19.5463)
 [node name="Pineapple" type="CharacterBody2D" groups=["Player", "pineapple"]]
 script = ExtResource("1_a6o70")
 
-[node name="ColorRect" type="ColorRect" parent="."]
-offset_left = -8.0
-offset_top = -8.0
-offset_right = 9.0
-offset_bottom = 20.0
-scale = Vector2(0.949282, 0.562784)
-color = Color(0.369358, 0.760893, 7.70092e-07, 1)
+[node name="FruitSprite" type="Node2D" parent="."]
+script = ExtResource("2_fruit")
+fruit_type = "Pineapple"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -0.190115)
