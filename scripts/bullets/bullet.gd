@@ -9,15 +9,16 @@ var spin_timer: float = 0.0
 var spin_direction: float = 1.0
 
 # Bouncy
-var bounces_left: int = 3
+var bounces_left: int = 1
 
 var explosion_scene = preload("res://scenes/effects/explosion.tscn")
 
 func setup(pos: Vector2, dir: Vector2):
 	position = pos + dir * 20
 	velocity = dir * 180
-	# Spinning — losowy kierunek wirowania
 	spin_direction = 1.0 if randf() > 0.5 else -1.0
+	if Global.modifiers.get(shooter_name, []).has("bouncy"):
+		bounces_left = 4
 
 func _physics_process(delta: float) -> void:
 	# Spinning modifier
@@ -35,11 +36,11 @@ func _on_body_entered(body: Node2D) -> void:
 	var mods = Global.modifiers.get(shooter_name, [])
 
 	if body.is_in_group("Terrain"):
-		if mods.has("bouncy") and bounces_left > 0:
-			bounces_left -= 1
+		bounces_left -= 1
+		if bounces_left >= 0:
 			velocity.y = -velocity.y * 0.8
 			return
-		call_deferred("queue_free")  # ← zmiana
+		call_deferred("queue_free")
 		return
 
 	if not body.has_method("apply_slow"):
