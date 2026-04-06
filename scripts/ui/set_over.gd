@@ -11,8 +11,8 @@ func _ready() -> void:
 	ranking_label.text = text
 
 func _on_continue_pressed() -> void:
-	get_tree().change_scene_to_file("res://scenes/ui/round_ended.tscn")
+	get_tree().change_scene_to_file("res://Scenes/ui/round_ended.tscn")
 
 func _on_reset_pressed() -> void:
 	Global.reset_full_game()
-	get_tree().change_scene_to_file("res://scenes/ui/choose_character.tscn")
+	get_tree().change_scene_to_file("res://Scenes/ui/choose_character.tscn")

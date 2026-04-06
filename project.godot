@@ -18,6 +18,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 Global="*res://scenes/global.tscn"
+ModifierSystem="*res://scripts/core/Modifier_System.gd"
 
 [editor]
 
@@ -26,17 +27,17 @@ version_control/autoload_on_startup=true
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/copilot-advanced/plugin.cfg")
+enabled=PackedStringArray()
 
 [global_group]
 
 Bullet=""
 Terrain=""
-Player=""
 strawberry=""
 grape=""
 orange=""
 pineapple=""
+Player=""
 
 [input]
 

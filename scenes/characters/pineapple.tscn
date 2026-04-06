@@ -1,13 +1,14 @@
 [gd_scene load_steps=4 format=3 uid="uid://cih6tmuexeris"]
 
-[ext_resource type="Script" path="res://scripts/characters/pineapple.gd" id="1_a6o70"]
+[ext_resource type="Script" path="res://scripts/characters/character.gd" id="1_oh60f"]
 [ext_resource type="Script" path="res://scripts/characters/fruit_drawer.gd" id="2_fruit"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mhe14"]
 size = Vector2(20, 19.5463)
 
-[node name="Pineapple" type="CharacterBody2D" groups=["Player", "pineapple"]]
-script = ExtResource("1_a6o70")
+[node name="Pineapple" type="CharacterBody2D" groups=["Players", "pineapple"]]
+script = ExtResource("1_oh60f")
+character_name = "Pineapple"
 
 [node name="FruitSprite" type="Node2D" parent="."]
 script = ExtResource("2_fruit")

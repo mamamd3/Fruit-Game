@@ -1,13 +1,14 @@
 [gd_scene load_steps=4 format=3 uid="uid://dxwakrvs65rur"]
 
-[ext_resource type="Script" path="res://scripts/characters/grape.gd" id="1_vy4vu"]
+[ext_resource type="Script" path="res://scripts/characters/character.gd" id="1_8qlny"]
 [ext_resource type="Script" path="res://scripts/characters/fruit_drawer.gd" id="2_fruit"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mhe14"]
 size = Vector2(20, 19.5463)
 
-[node name="Grape" type="CharacterBody2D" groups=["Player", "grape"]]
-script = ExtResource("1_vy4vu")
+[node name="Grape" type="CharacterBody2D" groups=["Players", "grape"]]
+script = ExtResource("1_8qlny")
+character_name = "Grape"
 
 [node name="FruitSprite" type="Node2D" parent="."]
 script = ExtResource("2_fruit")

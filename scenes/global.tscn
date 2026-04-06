@@ -1,12 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://d3l8yjytwx16b"]
+[gd_scene load_steps=3 format=3 uid="uid://d3l8yjytwx16b"]
 
 [ext_resource type="Script" path="res://scripts/core/global.gd" id="1_11p7f"]
+[ext_resource type="Script" path="res://scripts/core/Modifier_System.gd" id="2_sdtya"]
 
 [node name="Global" type="Node"]
 script = ExtResource("1_11p7f")
 
-[node name="Gnicie" type="Timer" parent="."]
-wait_time = 3.0
-one_shot = true
-
-[connection signal="timeout" from="Gnicie" to="." method="_on_gnicie_timeout"]
+[node name="ModifierSystem" type="Node" parent="."]
+script = ExtResource("2_sdtya")

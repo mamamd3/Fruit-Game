@@ -1,17 +1,16 @@
 [gd_scene load_steps=4 format=3 uid="uid://cog1lnh16jwd3"]
 
-[ext_resource type="Script" path="res://scripts/characters/strawberry.gd" id="1_rdxxn"]
+[ext_resource type="Script" path="res://scripts/characters/character.gd" id="1_iqrn4"]
 [ext_resource type="Script" path="res://scripts/characters/fruit_drawer.gd" id="2_fruit"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mhe14"]
 size = Vector2(20, 19.5463)
 
-[node name="Strawberry" type="CharacterBody2D" groups=["Player", "strawberry"]]
-script = ExtResource("1_rdxxn")
+[node name="Strawberry" type="CharacterBody2D" groups=["Players", "strawberry"]]
+script = ExtResource("1_iqrn4")
 
 [node name="FruitSprite" type="Node2D" parent="."]
 script = ExtResource("2_fruit")
-fruit_type = "Strawberry"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -0.190115)
