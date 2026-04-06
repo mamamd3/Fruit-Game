@@ -24,10 +24,10 @@ var modifiers = {}
 var all_modifiers = ["speed", "armor", "poison", "lifesteal", "explosive", "sticky", "bouncy", "spinning"]
 
 var base_characters = {
-	"Strawberry": {"hp": 200, "speed": 80,  "dmg": 30,  "range": 100, "fire_rate": 0.8},
-	"Orange":     {"hp": 80,  "speed": 90,  "dmg": 100, "range": 400, "fire_rate": 2.5},
-	"Pineapple":  {"hp": 120, "speed": 200, "dmg": 20,  "range": 80,  "fire_rate": 0.5},
-	"Grape":      {"hp": 150, "speed": 100, "dmg": 25,  "range": 150, "fire_rate": 0.2}
+	"Strawberry": {"hp": 100, "speed": 80,  "dmg": 25,  "range": 100, "fire_rate": 0.8},
+	"Orange":     {"hp": 50,  "speed": 90,  "dmg": 50, "range": 400, "fire_rate": 2.5},
+	"Pineapple":  {"hp": 200, "speed": 150, "dmg": 30,  "range": 80,  "fire_rate": 0.5},
+	"Grape":      {"hp": 80, "speed": 80, "dmg": 15,  "range": 150, "fire_rate": 0.2}
 }
 var characters = {}
 var death_order = []
