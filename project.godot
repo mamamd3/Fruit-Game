@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="gra"
-run/main_scene="res://scenes/ui/main_menu.tscn"
+run/main_scene="res://scenes/ui/choose_character.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -19,7 +19,6 @@ config/icon="res://icon.svg"
 
 Global="*res://scenes/global.tscn"
 ModifierSystem="*res://scripts/core/Modifier_System.gd"
-MultiplayerManager="*res://scripts/multiplayer/multiplayermanager.gd"
 
 [editor]
 
