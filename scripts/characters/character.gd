@@ -58,9 +58,11 @@ var streak_bonus_ready:      bool  = false   # fruit_streak
 var is_slowed:  bool  = false
 var slow_timer: float = 0.0
 
-# ── Poison incoming (stacks) ──────────────────────────────────────────────────
-var poison_stacks: int   = 0
-var poison_timer:  float = 0.0
+# ── Poison incoming (stacks z decay) ─────────────────────────────────────────
+# Każdy element to pozostały czas życia stacka (sekundy).
+# apply_poison() dodaje nowy stack (3s), _physics_process odlicza i usuwa wygasłe.
+var poison_stack_timers: Array[float] = []
+var poison_tick_timer:   float        = 0.0
 
 # ── Poison trail (stary mod: poison) ─────────────────────────────────────────
 var poison_zone_scene   = preload("res://Scenes/effects/poison_zone.tscn")
@@ -130,7 +132,7 @@ func apply_slow() -> void:
 func apply_poison() -> void:
 	if preservative_timer > 0.0:
 		return
-	poison_stacks += 1
+	poison_stack_timers.append(3.0)  # nowy stack trwa 3 sekundy
 
 ## Główna brama obrażeń — wywoływana z bullet.gd.
 ## Zwraca faktyczne obrażenia po modyfikacjach (0.0 = zablokowane).
@@ -207,12 +209,20 @@ func _physics_process(delta: float) -> void:
 		if slow_timer <= 0.0:
 			is_slowed = false
 
-	# Poison (incoming stacks) — 5 × stacks co sekundę
-	if poison_stacks > 0:
-		poison_timer -= delta
-		if poison_timer <= 0.0:
-			poison_timer = 1.0
-			Global.characters[character_name]["hp"] -= 5 * poison_stacks
+	# Poison (incoming stacks z decay) — 5 DMG × aktywne stacki co sekundę
+	if poison_stack_timers.size() > 0:
+		# Odliczaj czas życia każdego stacka
+		for i in range(poison_stack_timers.size() - 1, -1, -1):
+			poison_stack_timers[i] -= delta
+			if poison_stack_timers[i] <= 0.0:
+				poison_stack_timers.remove_at(i)
+		# Tick obrażeń co 1s
+		poison_tick_timer -= delta
+		if poison_tick_timer <= 0.0:
+			poison_tick_timer = 1.0
+			var stacks = poison_stack_timers.size()
+			if stacks > 0:
+				Global.take_damage(character_name, 5.0 * stacks, "🧪 Trucizna")
 
 	# Mody pasywne
 	ModifierSystem.apply_passive(character_name, delta, self)
