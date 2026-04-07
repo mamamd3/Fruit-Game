@@ -67,6 +67,7 @@ func _spawn_player(character_name: String, spawn_pos: Vector2, player_prefix: St
 		var owner_id = MultiplayerManager.get_peer_for_slot(slot)
 		if owner_id > 0:
 			player.network_owner_id = owner_id
+			player.is_remote = (owner_id != multiplayer.get_unique_id())
 
 
 func _setup_kill_feed() -> void:
@@ -176,3 +177,24 @@ func _do_scene_change() -> void:
 			MultiplayerManager.server_change_scene("res://Scenes/ui/round_ended.tscn")
 		else:
 			get_tree().change_scene_to_file("res://Scenes/ui/round_ended.tscn")
+
+
+# ─── SPECTATOR OVERLAY ────────────────────────────────────────────────────────
+
+## Serwer wywołuje tę funkcję na kliencie-obserwatorze, aby pokazał nakładkę.
+@rpc("authority", "call_remote", "reliable")
+func _rpc_notify_spectating() -> void:
+	_show_spectator_overlay()
+
+func _show_spectator_overlay() -> void:
+	var canvas        = CanvasLayer.new()
+	canvas.layer      = 20
+	add_child(canvas)
+	var lbl           = Label.new()
+	lbl.text          = "OBSERWATOR"
+	lbl.add_theme_font_size_override("font_size", 32)
+	lbl.anchor_right  = 1.0
+	lbl.anchor_bottom = 1.0
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.vertical_alignment   = VERTICAL_ALIGNMENT_CENTER
+	canvas.add_child(lbl)
