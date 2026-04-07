@@ -33,12 +33,18 @@ var modifier_pickers: Array = []
 
 var shot_counter: Dictionary = {}
 
-var base_characters: Dictionary = {
+# Oryginalne staty — NIGDY nie modyfikuj tego słownika.
+# Służy jako source-of-truth przy każdym reset_all().
+const ORIGINAL_BASE_CHARACTERS: Dictionary = {
 	"Strawberry": { "hp": 100, "speed": 80,  "dmg": 25, "range": 100, "fire_rate": 0.8 },
 	"Orange":     { "hp": 50,  "speed": 90,  "dmg": 50, "range": 400, "fire_rate": 2.5 },
 	"Pineapple":  { "hp": 200, "speed": 150, "dmg": 30, "range": 80,  "fire_rate": 0.5 },
 	"Grape":      { "hp": 80,  "speed": 100, "dmg": 15, "range": 150, "fire_rate": 0.2 },
 }
+
+# Kopia robocza — może być modyfikowana przez mody (thick_skin, seed_collector itp.)
+# Resetowana z ORIGINAL_BASE_CHARACTERS na początku każdej rundy.
+var base_characters: Dictionary = {}
 var characters: Dictionary = {}
 
 var modifier_registry: Dictionary = {
@@ -94,10 +100,10 @@ var all_modifiers: Array = [
 ]
 
 func _ready() -> void:
-	# Pełny reset przy każdym starcie gry
-	round_number = 1
-	points       = {}
-	modifiers    = {}
+	base_characters = ORIGINAL_BASE_CHARACTERS.duplicate(true)
+	round_number    = 1
+	points          = {}
+	modifiers       = {}
 	reset_selection()
 	reset_all()
 
@@ -111,7 +117,8 @@ func reset_selection() -> void:
 	player4_character = ""
 
 func reset_all() -> void:
-	characters   = base_characters.duplicate(true)
+	base_characters = ORIGINAL_BASE_CHARACTERS.duplicate(true)
+	characters      = ORIGINAL_BASE_CHARACTERS.duplicate(true)
 	shot_counter = {}
 	rot_bonus    = {}
 	alive        = {}
