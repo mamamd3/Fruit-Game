@@ -16,7 +16,7 @@ func _ready() -> void:
 
 func _on_local_pressed() -> void:
 	MultiplayerManager.start_single_player()
-	get_tree().change_scene_to_file("res://Scenes/ui/choose_character.tscn")
+	get_tree().change_scene_to_file("res://scenes/ui/choose_character.tscn")
 
 
 func _on_host_pressed() -> void:
@@ -24,7 +24,7 @@ func _on_host_pressed() -> void:
 	if p <= 0: p = 7777
 	MultiplayerManager.port = p
 	MultiplayerManager.start_server()
-	get_tree().change_scene_to_file("res://Scenes/ui/lobby.tscn")
+	get_tree().change_scene_to_file("res://scenes/ui/lobby.tscn")
 
 
 func _on_join_pressed() -> void:
@@ -41,7 +41,7 @@ func _on_join_pressed() -> void:
 
 func _on_mp_connected() -> void:
 	if MultiplayerManager.current_mode == MultiplayerManager.Mode.CLIENT:
-		get_tree().change_scene_to_file("res://Scenes/ui/lobby.tscn")
+		get_tree().change_scene_to_file("res://scenes/ui/lobby.tscn")
 
 
 func _on_mp_disconnected() -> void:

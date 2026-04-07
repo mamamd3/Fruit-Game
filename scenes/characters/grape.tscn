@@ -86,4 +86,3 @@ max_value = 150.0
 value = 150.0
 show_percentage = false
 
-[connection signal="body_entered" from="Hitbox" to="." method="_on_hitbox_body_entered"]

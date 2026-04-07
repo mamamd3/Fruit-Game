@@ -50,13 +50,13 @@ func _on_start_pressed() -> void:
 	Global.total_players = MultiplayerManager.connected_players.size()
 	MultiplayerManager.sync_total_players.rpc(Global.total_players)
 	await get_tree().create_timer(0.1).timeout
-	MultiplayerManager.server_change_scene("res://Scenes/ui/choose_character.tscn")
+	MultiplayerManager.server_change_scene("res://scenes/ui/choose_character.tscn")
 
 
 func _on_disconnected() -> void:
-	get_tree().change_scene_to_file("res://Scenes/ui/main_menu.tscn")
+	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
 
 
 func _on_back_pressed() -> void:
 	MultiplayerManager.disconnect_network()
-	get_tree().change_scene_to_file("res://Scenes/ui/main_menu.tscn")
+	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")

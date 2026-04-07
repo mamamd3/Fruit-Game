@@ -64,6 +64,6 @@ func pick(character_name: String):
 		Global.pick_character(character_name)
 		if Global.all_picked():
 			Global.reset_all()
-			get_tree().change_scene_to_file("res://Scenes/main_game.tscn")
+			get_tree().change_scene_to_file("res://scenes/main_game.tscn")
 		else:
 			update_ui()

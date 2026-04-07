@@ -2,20 +2,20 @@ extends Node2D
 
 var character_scenes = {
 	"Strawberry": {
-		"scene":  preload("res://Scenes/characters/strawberry.tscn"),
-		"bullet": preload("res://Scenes/bullets/strawberry_bullet.tscn")
+		"scene":  preload("res://scenes/characters/strawberry.tscn"),
+		"bullet": preload("res://scenes/bullets/strawberry_bullet.tscn")
 	},
 	"Grape": {
-		"scene":  preload("res://Scenes/characters/grape.tscn"),
-		"bullet": preload("res://Scenes/bullets/grape_bullet.tscn")
+		"scene":  preload("res://scenes/characters/grape.tscn"),
+		"bullet": preload("res://scenes/bullets/grape_bullet.tscn")
 	},
 	"Orange": {
-		"scene":  preload("res://Scenes/characters/orange.tscn"),
-		"bullet": preload("res://Scenes/bullets/orange_bullet.tscn")
+		"scene":  preload("res://scenes/characters/orange.tscn"),
+		"bullet": preload("res://scenes/bullets/orange_bullet.tscn")
 	},
 	"Pineapple": {
-		"scene":  preload("res://Scenes/characters/pineapple.tscn"),
-		"bullet": preload("res://Scenes/bullets/pineapple_bullet.tscn")
+		"scene":  preload("res://scenes/characters/pineapple.tscn"),
+		"bullet": preload("res://scenes/bullets/pineapple_bullet.tscn")
 	}
 }
 
@@ -95,6 +95,14 @@ func _on_shoot(pos: Vector2, dir: Vector2, player_prefix: String) -> void:
 
 @rpc("any_peer", "call_local", "reliable")
 func _rpc_spawn_bullet(pos: Vector2, dir: Vector2, player_prefix: String) -> void:
+	# Walidacja: nadawca może strzelać tylko swoją postacią
+	if Global.is_network_game and multiplayer.is_server():
+		var sender = multiplayer.get_remote_sender_id()
+		if sender > 0:
+			var expected_slot = int(player_prefix.substr(1))
+			var actual_slot = MultiplayerManager.player_slots.get(sender, -1)
+			if expected_slot != actual_slot:
+				return  # cheat attempt — ignoruj
 	_do_spawn_bullet(pos, dir, player_prefix)
 
 
@@ -169,14 +177,14 @@ func _rpc_end_round(winner: String) -> void:
 func _do_scene_change() -> void:
 	if Global.is_set_complete():
 		if Global.is_network_game:
-			MultiplayerManager.server_change_scene("res://Scenes/ui/set_over.tscn")
+			MultiplayerManager.server_change_scene("res://scenes/ui/set_over.tscn")
 		else:
-			get_tree().change_scene_to_file("res://Scenes/ui/set_over.tscn")
+			get_tree().change_scene_to_file("res://scenes/ui/set_over.tscn")
 	else:
 		if Global.is_network_game:
-			MultiplayerManager.server_change_scene("res://Scenes/ui/round_ended.tscn")
+			MultiplayerManager.server_change_scene("res://scenes/ui/round_ended.tscn")
 		else:
-			get_tree().change_scene_to_file("res://Scenes/ui/round_ended.tscn")
+			get_tree().change_scene_to_file("res://scenes/ui/round_ended.tscn")
 
 
 # ─── SPECTATOR OVERLAY ────────────────────────────────────────────────────────

@@ -34,7 +34,7 @@ func show_cards_for_current_picker() -> void:
 
 	var pool: Array = Global.all_modifiers.duplicate()
 	pool.shuffle()
-	current_cards = pool.slice(0, 3)
+	current_cards = pool.slice(0, mini(3, pool.size()))
 
 	_set_card_text(card1, current_cards[0])
 	_set_card_text(card2, current_cards[1])
@@ -66,10 +66,10 @@ func _set_card_text(card: Button, mod_id: String) -> void:
 func _go_to_main_game() -> void:
 	if Global.is_network_game:
 		if multiplayer.is_server():
-			MultiplayerManager.server_change_scene("res://Scenes/main_game.tscn")
+			MultiplayerManager.server_change_scene("res://scenes/main_game.tscn")
 		# Klienci czekają — serwer zmieni scenę dla wszystkich
 	else:
-		get_tree().change_scene_to_file("res://Scenes/main_game.tscn")
+		get_tree().change_scene_to_file("res://scenes/main_game.tscn")
 
 
 func _is_my_character(char_name: String) -> bool:

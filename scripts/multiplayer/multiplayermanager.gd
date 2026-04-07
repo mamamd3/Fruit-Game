@@ -171,7 +171,7 @@ func request_pick(character_name: String) -> void:
 		await get_tree().create_timer(0.2).timeout
 		Global.rpc_reset_all.rpc()
 		await get_tree().create_timer(0.05).timeout
-		_rpc_change_scene.rpc("res://Scenes/main_game.tscn")
+		_rpc_change_scene.rpc("res://scenes/main_game.tscn")
 
 # Serwer rozsyła aktualny stan wyboru postaci do wszystkich.
 @rpc("authority", "call_local", "reliable")
