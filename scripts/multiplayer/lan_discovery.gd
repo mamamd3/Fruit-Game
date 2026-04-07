@@ -47,7 +47,7 @@ func start_listening() -> void:
 	_listen_socket.set_broadcast_enabled(true)
 	var err: Error = _listen_socket.bind(BROADCAST_PORT)
 	if err != OK:
-		printerr("LanDiscovery: nie można nasłuchiwać na porcie %d (błąd %d)" % [BROADCAST_PORT, err])
+		printerr("LanDiscovery: nie można nasłuchiwać na porcie %d (%s)" % [BROADCAST_PORT, error_string(err)])
 		_listen_socket = null
 		return
 	_is_listening = true

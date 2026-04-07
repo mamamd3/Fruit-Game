@@ -25,9 +25,12 @@ var _net_sync_timer:  float = 0.0
 # Interpolacja sieciowa — wygładza ruch zdalnych postaci
 var _net_target_pos: Vector2    = Vector2.ZERO
 const NET_LERP_SPEED: float     = 20.0
-var is_remote: bool = false:
+var _is_remote: bool = false
+var is_remote: bool:
+	get:
+		return _is_remote
 	set(value):
-		is_remote = value
+		_is_remote = value
 		if value:
 			_net_target_pos = global_position
 
