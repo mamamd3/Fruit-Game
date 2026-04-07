@@ -1,75 +1,119 @@
-# multiplayermanager.gd
+# =====================================================================
+# Tabliczka Znamionowa Skryptu
+# Data: 2026-04-07
+# Opis: Skrypt zarządzający trybem wieloosobowym (ENet)
+# Gdzie uruchomić: Silnik Godot 4
+# Docelowa maszyna: Dowolny OS / Serwer dedykowany
+# Wymagane uprawnienia: Brak (standardowe prawa aplikacji)
+# =====================================================================
+
 extends Node
 
-# Sygnały, które mogą być emitowane przez ten skrypt
 signal connected
 signal disconnected
 signal message_received(message: String, sender_peer_id: int)
 signal player_joined(peer_id: int)
 signal player_left(peer_id: int)
 
-# Maksymalna liczba graczy
 const MAX_PLAYERS: int = 4
-
-# Enum do określania trybu gry (serwer, klient, pojedynczy gracz)
 enum Mode { SINGLE_PLAYER, SERVER, CLIENT }
 
-# Aktualny tryb gry i ID bieżącej instancji gracza
 var current_mode: Mode = Mode.SINGLE_PLAYER
 var peer_id: int = 0
-
-# Obiekt ENetMultiplayerPeer do zarządzania połączeniem sieciowym
-var multiplayer: ENetMultiplayerPeer
-
-# Słownik przechowujący ID wszystkich połączonych graczy (wraz z ID serwera)
+var multiplayer_peer: ENetMultiplayerPeer
 var connected_players: Dictionary = {}
 
-# Nazwa hosta do nasłuchiwania lub do którego się łączymy
 @export var host_address: String = "127.0.0.1"
-# Port, na którym nasłuchuje serwer lub do którego się łączymy
 @export var port: int = 7777
 
-# Inicjalizacja klasy
 func _ready() -> void:
-	# Połącz sygnał 'peer_connected' z metodą _on_peer_connected
-	# Połącz sygnał 'peer_disconnected' z metodą _on_peer_disconnected
-	# Połącz sygnał 'connection_failed' z metodą _on_connection_failed
-	# Połącz sygnał 'server_disconnected' z metodą _on_server_disconnected
-	# Te sygnały są dostępne tylko wtedy, gdy 'multiplayer' jest ustawiony
-	pass
+	multiplayer.connected_to_server.connect(_on_connected_to_server)
+	multiplayer.connection_failed.connect(_on_connection_failed)
+	multiplayer.server_disconnected.connect(_on_server_disconnected)
 
-# Metoda do uruchamiania gry w trybie dla jednego gracza
 func start_single_player() -> void:
-	print("Uruchamianie w trybie dla jednego gracza.")
+	disconnect_network()
 	current_mode = Mode.SINGLE_PLAYER
-	peer_id = 1 # ID dla gracza lokalnego w trybie solo
+	peer_id = 1
 	connected_players = {peer_id: "Gracz Lokalny"}
-	emit_signal("connected")
-	emit_signal("player_joined", peer_id)
+	connected.emit()
+	player_joined.emit(peer_id)
 
-# Metoda do uruchamiania gry jako serwer (host)
 func start_server() -> void:
-	print("Uruchamianie jako serwer...")
-	multiplayer = ENetMultiplayerPeer.new()
-	
-	# Ustawienie trybu serwera i limitu graczy
-	var error: Error = multiplayer.create_server(port, MAX_PLAYERS)
+	disconnect_network()
+	multiplayer_peer = ENetMultiplayerPeer.new()
+	var error: Error = multiplayer_peer.create_server(port, MAX_PLAYERS)
 	if error != OK:
 		printerr("Błąd przy tworzeniu serwera: ", error)
 		return
 
-	# Przypisanie obiektu multiplayer do globalnego obiektu multiplayer w silniku
-	multiplayer_api.multiplayer_peer = multiplayer
+	multiplayer.multiplayer_peer = multiplayer_peer
+	multiplayer_peer.peer_connected.connect(_on_peer_connected)
+	multiplayer_peer.peer_disconnected.connect(_on_peer_disconnected)
 	
-	# Ustawienie naszego ID gracza
-	peer_id = 1 # Serwer zawsze ma ID 1
+	peer_id = 1
 	current_mode = Mode.SERVER
 	connected_players = {peer_id: "Serwer"}
 	
-	# Połącz potrzebne sygnały z obiektu ENetMultiplayerPeer
-	multiplayer.peer_connected.connect(_on_peer_connected)
-	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
-	multiplayer.connection_failed.connect(_on_connection_failed)
-	multiplayer.server_disconnected.connect(_on_server_disconnected)
-	
-	print("Serwer uruchomiony na por
+	connected.emit()
+	player_joined.emit(peer_id)
+
+func start_client(address: String = host_address, server_port: int = port) -> void:
+	disconnect_network()
+	multiplayer_peer = ENetMultiplayerPeer.new()
+	var error: Error = multiplayer_peer.create_client(address, server_port)
+	if error != OK:
+		printerr("Błąd przy tworzeniu klienta: ", error)
+		return
+		
+	multiplayer.multiplayer_peer = multiplayer_peer
+	multiplayer_peer.peer_disconnected.connect(_on_peer_disconnected)
+
+func disconnect_network() -> void:
+	if multiplayer_peer != null:
+		multiplayer_peer.close()
+		multiplayer_peer = null
+		multiplayer.multiplayer_peer = null
+		
+	current_mode = Mode.SINGLE_PLAYER
+	peer_id = 0
+	connected_players.clear()
+	disconnected.emit()
+
+func broadcast(message: String) -> void:
+	if current_mode == Mode.SINGLE_PLAYER:
+		receive_message(message)
+	elif multiplayer_peer != null:
+		rpc("receive_message", message)
+
+@rpc("any_peer", "call_local", "reliable")
+func receive_message(message: String) -> void:
+	var sender_id = multiplayer.get_remote_sender_id()
+	if sender_id == 0:
+		sender_id = peer_id
+	message_received.emit(message, sender_id)
+
+func send_to_player(player_id: int, message: String) -> void:
+	if multiplayer_peer != null:
+		rpc_id(player_id, "receive_message", message)
+
+func _on_peer_connected(new_peer_id: int) -> void:
+	connected_players[new_peer_id] = "Gracz %d" % new_peer_id
+	player_joined.emit(new_peer_id)
+
+func _on_peer_disconnected(disconnected_peer_id: int) -> void:
+	if connected_players.has(disconnected_peer_id):
+		connected_players.erase(disconnected_peer_id)
+		player_left.emit(disconnected_peer_id)
+
+func _on_connection_failed() -> void:
+	disconnect_network()
+
+func _on_server_disconnected() -> void:
+	disconnect_network()
+
+func _on_connected_to_server() -> void:
+	peer_id = multiplayer.get_unique_id()
+	current_mode = Mode.CLIENT
+	connected_players = {peer_id: "Ty (Klient)"}
+	connected.emit()
