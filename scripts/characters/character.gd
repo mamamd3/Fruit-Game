@@ -30,7 +30,10 @@ var _is_dying: bool = false
 # ── Interpolacja sieciowa ─────────────────────────────────────────────────────
 # Ustawiona na true przez main_game.gd dla postaci sterowanych zdalnie.
 # Gdy true: _physics_process jest pomijany, pozycja jest interpolowana w _process.
-var is_remote:          bool    = false
+var is_remote:          bool    = false:
+	set(value):
+		if not _is_dying:
+			is_remote = value
 var _net_target_pos:    Vector2 = Vector2.ZERO
 const NET_LERP_SPEED:   float   = 20.0
 
@@ -113,7 +116,8 @@ func get_input() -> void:
 # ─────────────────────────────────────────────
 
 ## Odbiera stan pozycji od serwera i ustawia cel interpolacji.
-## Wywołaj to na zdalnym kliencie (is_remote == true) po każdym pakiecie sieciowym.
+## Wywołaj to na zdalnym kliencie (33
+== true) po każdym pakiecie sieciowym.
 func receive_remote_state(pos: Vector2, vel: Vector2) -> void:
 	_net_target_pos = pos
 	# Prędkość zachowana na wypadek przyszłego użycia (np. przewidywanie ruchu).
@@ -124,7 +128,7 @@ func _process(delta: float) -> void:
 	if not is_remote or _is_dying:
 		return
 	# Płynna interpolacja zamiast teleportacji przy każdym pakiecie.
-	global_position = global_position.lerp(_net_target_pos, delta * NET_LERP_SPEED)
+	global_position = global_position.lerp(_net_target_pos, clamp(delta * NET_LERP_SPEED, 0.0, 1.0)
 
 
 # ─────────────────────────────────────────────
