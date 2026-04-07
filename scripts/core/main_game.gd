@@ -23,6 +23,7 @@ var bullet_scenes:     Dictionary = {}
 var player_characters: Dictionary = {}
 var kill_feed_script   = preload("res://scripts/ui/kill_feed.gd")
 var bot_controller_scn = preload("res://scripts/ai/bot_controller.gd")
+var melee_hit_scene    = preload("res://scenes/effects/melee_hit.tscn")
 var _ending_round: bool = false
 
 
@@ -100,8 +101,14 @@ func _setup_kill_feed() -> void:
 func _on_shoot(pos: Vector2, dir: Vector2, player_prefix: String) -> void:
 	if _ending_round:
 		return
+	var char_name = player_characters.get(player_prefix, "")
+
+	# Ananas = MELEE — cios obszarowy zamiast pocisku
+	if char_name == "Pineapple":
+		_do_melee_attack(pos, dir, char_name)
+		return
+
 	if Global.is_network_game:
-		# Strzelający klient rozsyła żądanie spawnu pocisku do wszystkich
 		_rpc_spawn_bullet.rpc(pos, dir, player_prefix)
 	else:
 		_do_spawn_bullet(pos, dir, player_prefix)
@@ -220,3 +227,12 @@ func _show_spectator_overlay() -> void:
 	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl.vertical_alignment   = VERTICAL_ALIGNMENT_CENTER
 	canvas.add_child(lbl)
+
+
+# ─── MELEE ATTACK (Pineapple) ────────────────────────────────────────────────
+func _do_melee_attack(pos: Vector2, dir: Vector2, char_name: String) -> void:
+	var hit = melee_hit_scene.instantiate() as Area2D
+	hit.position      = pos + dir * 25.0  # offset w kierunku ataku
+	hit.shooter_name  = char_name
+	hit.hit_direction = dir
+	$Bullets.add_child(hit)  # reuse Bullets node jako kontener

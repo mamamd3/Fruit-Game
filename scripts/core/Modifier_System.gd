@@ -89,10 +89,10 @@ func get_extra_bullet_dirs(char_name: String, base_dir: Vector2) -> Array:
 				var perp = Vector2(-base_dir.y, base_dir.x) * 0.15
 				extra_dirs.append((base_dir + perp).normalized())
 
-			# ── Shotgun pestek — 4 pociski w wachlarzu ±15° i ±30° ───
-			"shotgun":
-				for deg in [-30, -15, 15, 30]:
-					extra_dirs.append(base_dir.rotated(deg_to_rad(float(deg))).normalized())
+				# ── Shotgun pestek — 3 pociski w wachlarzu ─────────────────
+				"shotgun":
+					for deg in [-25, 0, 25]:
+						extra_dirs.append(base_dir.rotated(deg_to_rad(float(deg))).normalized())
 
 	return extra_dirs
 

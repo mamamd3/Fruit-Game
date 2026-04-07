@@ -55,7 +55,7 @@ var modifier_registry: Dictionary = {
 	"sniper_seed":        { "name": "Pestka snajpera",        "emoji": "🎯",  "category": "projectile", "trigger": "on_shoot",   "desc": "Pocisk leci o 25% szybciej." },
 	"fermentation":       { "name": "Fermentacja",            "emoji": "🧪",  "category": "projectile", "trigger": "on_hit",     "desc": "Każdy pocisk zatruwa wroga na 3 sek." },
 	"ripe_shot":          { "name": "Dojrzały strzał",        "emoji": "🍑",  "category": "projectile", "trigger": "on_shoot",   "desc": "Co 3. strzał zadaje +30% obrażeń." },
-	"shotgun":            { "name": "Shotgun pestek",         "emoji": "💥",  "category": "projectile", "trigger": "on_shoot",   "desc": "Wystrzelasz 4 dodatkowe pociski w wachlarzu." },
+	"shotgun":            { "name": "Shotgun pestek",         "emoji": "💥",  "category": "projectile", "trigger": "on_shoot",   "desc": "Wystrzelasz 3 dodatkowe pociski w wachlarzu." },
 	"radioactive_seed":   { "name": "Radioaktywna pestka",    "emoji": "☢️",  "category": "projectile", "trigger": "on_hit",     "desc": "Przy trafieniu zostaje toksyczna plama na 3 sek." },
 	"rot_shot":           { "name": "Strzał zgnilizny",       "emoji": "🦠",  "category": "projectile", "trigger": "on_hit",     "desc": "Trafiony wróg gnije o 3 sek szybciej." },
 	"magnetic_seed":      { "name": "Magnetyczna pestka",     "emoji": "🧲",  "category": "projectile", "trigger": "on_shoot",   "desc": "Pocisk skręca w kierunku wroga w zasięgu 2m." },
