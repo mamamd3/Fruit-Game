@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 Global="*res://scenes/global.tscn"
 ModifierSystem="*res://scripts/core/Modifier_System.gd"
+MultiplayerManager="*res://scripts/multiplayer/multiplayermanager.gd"
 
 [editor]
 
