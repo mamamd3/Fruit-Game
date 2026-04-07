@@ -1,0 +1,88 @@
+[gd_scene load_steps=2 format=3 uid="uid://dm1p3qa7nxc9b"]
+
+[ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="1_mnmgd"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_mnmgd")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.08, 0.08, 0.12, 1)
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -220.0
+offset_top = -220.0
+offset_right = 220.0
+offset_bottom = 220.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 14
+
+[node name="TitleLabel" type="Label" parent="VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "🍓 Fruit Game"
+horizontal_alignment = 1
+
+[node name="LocalButton" type="Button" parent="VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 50)
+theme_override_font_sizes/font_size = 26
+text = "Gra lokalna"
+
+[node name="Separator" type="HSeparator" parent="VBox"]
+layout_mode = 2
+
+[node name="HostButton" type="Button" parent="VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 50)
+theme_override_font_sizes/font_size = 26
+text = "Hostuj grę sieciową"
+
+[node name="IPInput" type="LineEdit" parent="VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+theme_override_font_sizes/font_size = 20
+placeholder_text = "Adres IP hosta"
+text = "127.0.0.1"
+
+[node name="PortInput" type="LineEdit" parent="VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+theme_override_font_sizes/font_size = 20
+placeholder_text = "Port"
+text = "7777"
+
+[node name="JoinButton" type="Button" parent="VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 50)
+theme_override_font_sizes/font_size = 26
+text = "Dołącz do gry"
+
+[node name="StatusLabel" type="Label" parent="VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = ""
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[connection signal="pressed" from="VBox/LocalButton" to="." method="_on_local_pressed"]
+[connection signal="pressed" from="VBox/HostButton"  to="." method="_on_host_pressed"]
+[connection signal="pressed" from="VBox/JoinButton"  to="." method="_on_join_pressed"]

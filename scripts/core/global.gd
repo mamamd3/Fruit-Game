@@ -1,6 +1,10 @@
 extends Node
 signal kill_feed_message(text: String)
 
+# ── Tryb sieciowy ─────────────────────────────────────────────────────────────
+var is_network_game:   bool = false   # true gdy gram przez sieć
+var local_player_slot: int  = 0       # który slot kontroluję (1-4), 0 = lokalny
+
 var player1_character: String = ""
 var player2_character: String = ""
 var player3_character: String = ""
@@ -179,6 +183,18 @@ func take_damage(target: String, amount: float, reason: String = "") -> void:
 	var msg = reason + "  →  " + target + " -" + str(int(amount)) + " HP"
 	print(msg)
 	kill_feed_message.emit(msg)
+	# W trybie sieciowym serwer synchronizuje HP do wszystkich klientów
+	if is_network_game and multiplayer.is_server():
+		_rpc_sync_hp.rpc(target, float(characters[target]["hp"]))
+
+@rpc("authority", "call_remote", "reliable")
+func _rpc_sync_hp(target: String, hp: float) -> void:
+	if characters.has(target):
+		characters[target]["hp"] = hp
+
+@rpc("authority", "call_local", "reliable")
+func rpc_reset_all() -> void:
+	reset_all()
 
 # _physics_process USUNIĘTY CAŁKOWICIE
 # Koniec rundy wykrywa wyłącznie main_game.gd
