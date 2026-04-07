@@ -355,7 +355,7 @@ func _passive_poison_trail(char_name: String, delta: float, char_node: Node) -> 
 	var zone: Node    = char_node.poison_zone_scene.instantiate()
 	zone.position     = char_node.global_position
 	zone.shooter_name = char_name
-	char_node.get_tree().root.add_child(zone)
+	char_node.get_tree().root.call_deferred("add_child", zone)
 
 func _update_base_dmg(char_name: String, bonus: float) -> void:
 	if not Global.base_characters.has(char_name):
@@ -370,7 +370,7 @@ func _spawn_poison_zone(pos: Vector2, shooter_name: String) -> void:
 	var zone: Node    = scene.instantiate()
 	zone.position     = pos
 	zone.shooter_name = shooter_name
-	get_tree().root.add_child(zone)
+	get_tree().root.call_deferred("add_child", zone)
 
 func _spawn_explosion(pos: Vector2, shooter_name: String) -> void:
 	var scene = load("res://scenes/effects/explosion.tscn")
@@ -379,7 +379,7 @@ func _spawn_explosion(pos: Vector2, shooter_name: String) -> void:
 	var expl: Node   = scene.instantiate()
 	expl.position    = pos
 	expl.shooter_name = shooter_name  # tylko raz — była zduplikowana linia
-	get_tree().root.add_child(expl)
+	get_tree().root.call_deferred("add_child", expl)
 
 func _find_character(char_name: String) -> Node:
 	for node in get_tree().get_nodes_in_group("Players"):
