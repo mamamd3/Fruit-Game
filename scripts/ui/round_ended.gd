@@ -30,6 +30,7 @@ func _on_button_pressed() -> void:
 	if Global.is_network_game:
 		if not multiplayer.is_server():
 			return
+		MultiplayerManager.promote_spectators()
 		MultiplayerManager.rpc_sync_round_number.rpc(Global.round_number)
 		await get_tree().create_timer(0.05).timeout
 		if Global.modifier_pickers.size() > 0:
