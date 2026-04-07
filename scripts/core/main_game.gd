@@ -26,6 +26,14 @@ var bot_controller_scn = preload("res://scripts/ai/bot_controller.gd")
 var melee_hit_scene    = preload("res://scenes/effects/melee_hit.tscn")
 var _ending_round: bool = false
 
+var map_scenes: Array = [
+	preload("res://scenes/maps/fruit_bowl.tscn"),
+	preload("res://scenes/maps/juice_factory.tscn"),
+	preload("res://scenes/maps/canopy.tscn"),
+	preload("res://scenes/maps/blender.tscn"),
+]
+var current_map: Node2D = null
+
 
 func _ready() -> void:
 	Global.reset_all()
@@ -38,10 +46,15 @@ func _ready() -> void:
 		if Global.modifiers[character].size() > 0:
 			print(character + " mody: " + str(Global.modifiers[character]))
 
-	_spawn_player(Global.player1_character, $Players/SpawnPoint1.position, "p1")
-	_spawn_player(Global.player2_character, $Players/SpawnPoint2.position, "p2")
-	_spawn_player(Global.player3_character, $Players/SpawnPoint3.position, "p3")
-	_spawn_player(Global.player4_character, $Players/SpawnPoint4.position, "p4")
+	# Losowa mapa
+	_load_random_map()
+
+	# Spawn z pozycji mapy
+	var spawns = _get_spawn_points()
+	_spawn_player(Global.player1_character, spawns[0], "p1")
+	_spawn_player(Global.player2_character, spawns[1], "p2")
+	_spawn_player(Global.player3_character, spawns[2], "p3")
+	_spawn_player(Global.player4_character, spawns[3], "p4")
 
 	$Gnicie.start()
 
@@ -236,3 +249,30 @@ func _do_melee_attack(pos: Vector2, dir: Vector2, char_name: String) -> void:
 	hit.shooter_name  = char_name
 	hit.hit_direction = dir
 	$Bullets.add_child(hit)  # reuse Bullets node jako kontener
+
+
+# ─── MAP LOADING ─────────────────────────────────────────────────────────────
+func _load_random_map() -> void:
+	# Usuń stary teren z main_game.tscn (jeśli jest)
+	if has_node("Terrain"):
+		$Terrain.queue_free()
+
+	var scene = map_scenes.pick_random()
+	current_map = scene.instantiate()
+	current_map.name = "MapInstance"
+	add_child(current_map)
+	move_child(current_map, 0)  # tło pod wszystkim
+
+	print("Mapa: " + current_map.name)
+
+func _get_spawn_points() -> Array:
+	# Szukaj SpawnPoint1-4 w załadowanej mapie
+	var points: Array = []
+	for i in range(1, 5):
+		var sp = current_map.get_node_or_null("SpawnPoint" + str(i))
+		if sp:
+			points.append(sp.position)
+		else:
+			# Fallback — domyślne pozycje
+			points.append(Vector2(-100 + i * 50, 50))
+	return points
