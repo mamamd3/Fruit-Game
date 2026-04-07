@@ -63,9 +63,9 @@ func apply_on_ready(char_name: String, char_node: Node) -> void:
 			"speed":
 				char_node.max_speed *= 1.20
 
-				# ── Antyzgnilizna — +5 sek do czasu gnicia ───────────────
-				"antirot":
-					char_node.rot_time_remaining += 5.0
+			# ── Antyzgnilizna — +5 sek do czasu gnicia ───────────────
+			"antirot":
+				char_node.rot_time_remaining += 5.0
 
 			# ── Stary mod: armor — obsługiwany w apply_on_receive ─────
 			"armor":
@@ -131,9 +131,9 @@ func apply_on_hit(shooter_name: String, target_node: Node, hit_pos: Vector2, dmg
 
 			# ── Strzał zgnilizny — trafiony gnije o 3 sek szybciej ───
 			"rot_shot":
-					var rot_target = _find_character(target_name)
-					if rot_target:
-						rot_target.rot_time_remaining -= 3.0
+				var rot_target = _find_character(target_name)
+				if rot_target:
+					rot_target.rot_time_remaining -= 3.0
 
 			# ── Lifesteal — odzyskujesz 30% zadanych obrażeń jako HP ──
 			"lifesteal":
@@ -291,7 +291,7 @@ func apply_passive(char_name: String, delta: float, char_node: Node) -> void:
 				_passive_rot_explosion(char_name, char_node)
 
 			"rot_accelerator":
-					_passive_rot_accelerator(char_name, delta, char_node)
+				_passive_rot_accelerator(char_name, delta, char_node)
 
 			"poison":
 				_passive_poison_trail(char_name, delta, char_node)
