@@ -122,6 +122,8 @@ func _ready() -> void:
 # INPUT
 # ─────────────────────────────────────────────
 func get_input() -> void:
+	if action_shoot == "":  # bot — sterowany przez BotController
+		return
 	if not Input.is_action_just_pressed(action_shoot):
 		return
 	if not Reloading.is_stopped():
@@ -245,11 +247,12 @@ func _physics_process(delta: float) -> void:
 
 	get_input()
 
-	# Ruch poziomy
-	var cur_max    = max_speed * 0.4 if is_slowed else max_speed
-	var x_input    = Input.get_action_strength(action_right) - Input.get_action_strength(action_left)
-	var vel_weight = delta * (ACCELERATION if x_input else FRICTION)
-	velocity.x     = lerp(velocity.x, x_input * cur_max, vel_weight)
+	# Ruch poziomy (pomijany dla botów — BotController steruje velocity)
+	var cur_max = max_speed * 0.4 if is_slowed else max_speed
+	if action_left != "":
+		var x_input    = Input.get_action_strength(action_right) - Input.get_action_strength(action_left)
+		var vel_weight = delta * (ACCELERATION if x_input else FRICTION)
+		velocity.x     = lerp(velocity.x, x_input * cur_max, vel_weight)
 
 	# Grawitacja i coyote time
 	if is_on_floor():
@@ -259,12 +262,12 @@ func _physics_process(delta: float) -> void:
 		if CoyoteTimer.is_stopped() and not coyote_time_activated:
 			CoyoteTimer.start()
 			coyote_time_activated = true
-		if Input.is_action_just_released(action_jump) or is_on_ceiling():
+		if action_jump != "" and Input.is_action_just_released(action_jump) or is_on_ceiling():
 			velocity.y *= 0.5
 		gravity = lerp(gravity, MAX_GRAVITY, 12.0 * delta)
 
-	# Jump buffer
-	if Input.is_action_just_pressed(action_jump) and JumpBufferTimer.is_stopped():
+	# Jump buffer (tylko gracze)
+	if action_jump != "" and Input.is_action_just_pressed(action_jump) and JumpBufferTimer.is_stopped():
 		JumpBufferTimer.start()
 
 	if not JumpBufferTimer.is_stopped() and (not CoyoteTimer.is_stopped() or is_on_floor()):

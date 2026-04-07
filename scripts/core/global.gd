@@ -10,6 +10,9 @@ var player2_character: String = ""
 var player3_character: String = ""
 var player4_character: String = ""
 
+# Typ slotu: "player" lub "bot" — ustawiany w menu
+var slot_types: Dictionary = { 1: "player", 2: "player", 3: "player", 4: "player" }
+
 var round_over:   bool   = false
 var game_started: bool   = false
 var winner:       String = ""
@@ -155,11 +158,17 @@ func pick_character(character_name: String) -> void:
 		2: player2_character = character_name
 		3: player3_character = character_name
 		4: player4_character = character_name
-	available_characters.erase(character_name)
+	if character_name != "":
+		available_characters.erase(character_name)
 	current_picking_player += 1
 
 func all_picked() -> bool:
-	return current_picking_player > total_players
+	# Przeskocz sloty "off" w liczniku
+	var last_active_slot = 0
+	for i in range(1, 5):
+		if slot_types.get(i, "off") != "off":
+			last_active_slot = i
+	return current_picking_player > last_active_slot
 
 func is_set_complete() -> bool:
 	return round_number % rounds_per_set == 0

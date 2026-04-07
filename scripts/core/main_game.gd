@@ -21,7 +21,8 @@ var character_scenes = {
 
 var bullet_scenes:     Dictionary = {}
 var player_characters: Dictionary = {}
-var kill_feed_script = preload("res://scripts/ui/kill_feed.gd")
+var kill_feed_script   = preload("res://scripts/ui/kill_feed.gd")
+var bot_controller_scn = preload("res://scripts/ai/bot_controller.gd")
 var _ending_round: bool = false
 
 
@@ -61,9 +62,22 @@ func _spawn_player(character_name: String, spawn_pos: Vector2, player_prefix: St
 	player.shoot.connect(func(pos, dir): _on_shoot(pos, dir, player_prefix))
 	$Players.add_child(player)
 
+	# Bot AI — jeśli slot to bot, dodaj kontroler i wyłącz input gracza
+	var slot = int(player_prefix.substr(1))  # "p1" → 1
+	if Global.slot_types.get(slot, "player") == "bot":
+		var bot = Node.new()
+		bot.set_script(bot_controller_scn)
+		bot.name = "BotController"
+		player.add_child(bot)
+		bot.setup(player, character_name)
+		# Wyłącz input gracza — bot steruje ruchem
+		player.action_left  = ""
+		player.action_right = ""
+		player.action_jump  = ""
+		player.action_shoot = ""
+
 	# W trybie sieciowym przypisz właściciela węzła
 	if Global.is_network_game:
-		var slot     = int(player_prefix.substr(1))  # "p1" → 1
 		var owner_id = MultiplayerManager.get_peer_for_slot(slot)
 		if owner_id > 0:
 			player.network_owner_id = owner_id
