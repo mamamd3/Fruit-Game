@@ -18,6 +18,10 @@ var action_right: String = ""
 var action_jump:  String = ""
 var action_shoot: String = ""
 
+# Sieć — ID peera właściciela tej postaci (0 = tryb lokalny)
+var network_owner_id: int   = 0
+var _net_sync_timer:  float = 0.0
+
 var max_speed:  float = 0.0
 var base_speed: float = 0.0
 
@@ -152,11 +156,14 @@ func die() -> void:
 # PHYSICS PROCESS
 # ─────────────────────────────────────────────
 func _physics_process(delta: float) -> void:
-	# Jeśli węzeł jest już w trakcie usuwania, nie rób niczego.
-	# To jest drugi poziom ochrony — _is_dying powinien wystarczyć,
-	# ale is_instance_valid daje dodatkową pewność.
 	if _is_dying:
 		return
+
+	# W trybie sieciowym: jeśli to nie nasza postać, tylko aktualizuj HP bar
+	if Global.is_network_game and network_owner_id != 0:
+		if multiplayer.get_unique_id() != network_owner_id:
+			health_bar.value = Global.characters[character_name]["hp"]
+			return
 
 	# Sprawdź HP — jeśli <= 0 to śmierć
 	if Global.characters[character_name]["hp"] <= 0:
@@ -236,3 +243,19 @@ func _physics_process(delta: float) -> void:
 
 	velocity.y += gravity
 	move_and_slide()
+
+	# W trybie sieciowym właściciel synchronizuje pozycję do pozostałych (~30 Hz)
+	if Global.is_network_game and network_owner_id != 0:
+		_net_sync_timer += delta
+		if _net_sync_timer >= 0.033:
+			_net_sync_timer = 0.0
+			_rpc_sync_pos.rpc(position, velocity)
+
+
+# ─────────────────────────────────────────────
+# NETWORK POSITION SYNC
+# ─────────────────────────────────────────────
+@rpc("any_peer", "call_remote", "unreliable")
+func _rpc_sync_pos(pos: Vector2, vel: Vector2) -> void:
+	position = pos
+	velocity = vel

@@ -136,11 +136,12 @@ func _on_body_entered(body: Node2D) -> void:
 	if not Global.characters.has(target_name): return
 	if not Global.alive.get(target_name, false): return
 	if not Global.characters.has(shooter_name): return
-
-	# NOWE: sprawdź czy strzelec nadal żyje według stanu alive
-	# Chroni przed sytuacją wzajemnego zabicia gdy obaj umierają
-	# w tej samej klatce i jeden pocisk próbuje działać "w imieniu" trupa
 	if not Global.alive.get(shooter_name, false): return
+
+	# W trybie sieciowym obrażenia zadaje tylko serwer (uniknięcie duplikatów)
+	if Global.is_network_game and not multiplayer.is_server():
+		call_deferred("queue_free")
+		return
 
 
 

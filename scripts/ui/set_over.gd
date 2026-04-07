@@ -1,6 +1,8 @@
 extends Control
 
-@onready var ranking_label: Label = $RankingLabel  # ← sprawdź nazwę w scenie!
+@onready var ranking_label:   Label  = $RankingLabel
+@onready var continue_button: Button = $Continue
+@onready var reset_button:    Button = $Reset
 
 func _ready() -> void:
 	var sorted = Global.points.keys()
@@ -10,9 +12,27 @@ func _ready() -> void:
 		text += str(i + 1) + ". " + sorted[i] + " — " + str(Global.points[sorted[i]]) + " pkt\n"
 	ranking_label.text = text
 
+	# W trybie sieciowym tylko serwer steruje
+	if Global.is_network_game and not multiplayer.is_server():
+		continue_button.disabled = true
+		reset_button.disabled    = true
+		continue_button.text     = "Czekaj na hosta..."
+
 func _on_continue_pressed() -> void:
-	get_tree().change_scene_to_file("res://Scenes/ui/round_ended.tscn")
+	if Global.is_network_game:
+		if not multiplayer.is_server():
+			return
+		MultiplayerManager.server_change_scene("res://Scenes/ui/round_ended.tscn")
+	else:
+		get_tree().change_scene_to_file("res://Scenes/ui/round_ended.tscn")
 
 func _on_reset_pressed() -> void:
-	Global.reset_full_game()
-	get_tree().change_scene_to_file("res://Scenes/ui/choose_character.tscn")
+	if Global.is_network_game:
+		if not multiplayer.is_server():
+			return
+		Global.reset_full_game()
+		MultiplayerManager._rpc_sync_character_state.rpc("", "", "", "", 1)
+		MultiplayerManager.server_change_scene("res://Scenes/ui/choose_character.tscn")
+	else:
+		Global.reset_full_game()
+		get_tree().change_scene_to_file("res://Scenes/ui/choose_character.tscn")

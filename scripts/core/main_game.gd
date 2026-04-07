@@ -26,8 +26,6 @@ var _ending_round: bool = false
 
 
 func _ready() -> void:
-	# reset_all TUTAJ (nie w round_ended) — dzięki temu stara scena nie widzi
-	# pustego alive{} gdy reset następuje przed zmianą sceny.
 	Global.reset_all()
 	_setup_kill_feed()
 	Global.game_started = true
@@ -51,6 +49,8 @@ func _spawn_player(character_name: String, spawn_pos: Vector2, player_prefix: St
 		return
 	var data   = character_scenes[character_name]
 	var player = data["scene"].instantiate()
+	# Nadaj spójną nazwę węzła — wymagana przez RPC przez sieć
+	player.name         = player_prefix
 	player.action_left  = player_prefix + "_left"
 	player.action_right = player_prefix + "_right"
 	player.action_jump  = player_prefix + "_jump"
@@ -60,6 +60,13 @@ func _spawn_player(character_name: String, spawn_pos: Vector2, player_prefix: St
 	player_characters[player_prefix] = character_name
 	player.shoot.connect(func(pos, dir): _on_shoot(pos, dir, player_prefix))
 	$Players.add_child(player)
+
+	# W trybie sieciowym przypisz właściciela węzła
+	if Global.is_network_game:
+		var slot     = int(player_prefix.substr(1))  # "p1" → 1
+		var owner_id = MultiplayerManager.get_peer_for_slot(slot)
+		if owner_id > 0:
+			player.network_owner_id = owner_id
 
 
 func _setup_kill_feed() -> void:
@@ -78,14 +85,29 @@ func _setup_kill_feed() -> void:
 func _on_shoot(pos: Vector2, dir: Vector2, player_prefix: String) -> void:
 	if _ending_round:
 		return
-	var char_name: String = player_characters[player_prefix]
+	if Global.is_network_game:
+		# Strzelający klient rozsyła żądanie spawnu pocisku do wszystkich
+		_rpc_spawn_bullet.rpc(pos, dir, player_prefix)
+	else:
+		_do_spawn_bullet(pos, dir, player_prefix)
 
-	# Główny pocisk
+
+@rpc("any_peer", "call_local", "reliable")
+func _rpc_spawn_bullet(pos: Vector2, dir: Vector2, player_prefix: String) -> void:
+	_do_spawn_bullet(pos, dir, player_prefix)
+
+
+func _do_spawn_bullet(pos: Vector2, dir: Vector2, player_prefix: String) -> void:
+	if not bullet_scenes.has(player_prefix):
+		return
+	var char_name: String = player_characters.get(player_prefix, "")
+	if char_name == "":
+		return
+
 	var bullet = bullet_scenes[player_prefix].instantiate() as Area2D
 	$Bullets.add_child(bullet)
 	bullet.setup(pos, dir, char_name)
 
-	# Dodatkowe pociski z modów (double_shot, shotgun)
 	var extra_dirs: Array = ModifierSystem.get_extra_bullet_dirs(char_name, dir)
 	for extra_dir in extra_dirs:
 		var extra = bullet_scenes[player_prefix].instantiate() as Area2D
@@ -94,12 +116,14 @@ func _on_shoot(pos: Vector2, dir: Vector2, player_prefix: String) -> void:
 
 
 func _on_gnicie_timeout() -> void:
-	# Gnicie = czas minął, wszyscy żywi remisują — brak zwycięzcy
 	_end_round("")
 
 
 func _physics_process(_delta: float) -> void:
 	if _ending_round:
+		return
+	# W trybie sieciowym koniec rundy wykrywa tylko serwer
+	if Global.is_network_game and not multiplayer.is_server():
 		return
 	var alive_count = Global.alive.values().count(true)
 	if alive_count <= 1:
@@ -112,8 +136,6 @@ func _physics_process(_delta: float) -> void:
 
 
 func _end_round(winning_character: String) -> void:
-	# Flaga _ending_round blokuje wielokrotne wywołanie (np. gnicie + physics_process
-	# wykrywają koniec rundy w tej samej klatce).
 	if _ending_round:
 		return
 	_ending_round     = true
@@ -124,14 +146,33 @@ func _end_round(winning_character: String) -> void:
 		$Gnicie.stop()
 
 	Global.build_ranking()
-	Global.assign_points()  # nie przyznaje punktów przy remisoie (winner == "")
+	Global.assign_points()
 
-	# Remis — defensywnie zerujemy modifier_pickers tutaj też,
-	# choć round_ended.gd już to obsługuje po swojej stronie.
 	if winning_character == "":
 		Global.modifier_pickers = []
 
-	if Global.is_set_complete():
-		get_tree().change_scene_to_file("res://Scenes/ui/set_over.tscn")
+	if Global.is_network_game:
+		# Serwer zmienia scenę dla wszystkich
+		_rpc_end_round.rpc(winning_character)
 	else:
-		get_tree().change_scene_to_file("res://Scenes/ui/round_ended.tscn")
+		_do_scene_change()
+
+
+@rpc("authority", "call_local", "reliable")
+func _rpc_end_round(winner: String) -> void:
+	Global.winner     = winner
+	Global.round_over = true
+	_do_scene_change()
+
+
+func _do_scene_change() -> void:
+	if Global.is_set_complete():
+		if Global.is_network_game:
+			MultiplayerManager.server_change_scene("res://Scenes/ui/set_over.tscn")
+		else:
+			get_tree().change_scene_to_file("res://Scenes/ui/set_over.tscn")
+	else:
+		if Global.is_network_game:
+			MultiplayerManager.server_change_scene("res://Scenes/ui/round_ended.tscn")
+		else:
+			get_tree().change_scene_to_file("res://Scenes/ui/round_ended.tscn")
