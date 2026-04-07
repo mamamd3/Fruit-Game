@@ -89,14 +89,21 @@ var modifier_registry: Dictionary = {
 }
 
 var all_modifiers: Array = [
+	# Projectile
 	"double_shot", "sniper_seed", "fermentation", "ripe_shot", "shotgun",
 	"radioactive_seed", "rot_shot", "magnetic_seed",
+	"lifesteal", "explosive", "sticky", "spinning",
+	# Defense
 	"thick_skin", "juicy_core", "wax_coat", "thorn_shield", "hard_fruit",
 	"antirot", "preservative", "second_fruit", "still_green", "stone_seed",
+	"armor",
+	# Bounce
 	"extra_bounce", "accelerating_bounce", "destroying_bounce",
-	"magnetic_bounce", "mirror_skin", "rage_bounce",
+	"magnetic_bounce", "mirror_skin", "rage_bounce", "bouncy",
+	# Passive / Area
 	"ripe_sprint", "rot_accelerator", "rot_explosion",
 	"seed_collector", "fruit_streak", "mod_duplicator",
+	"poison", "speed",
 ]
 
 func _ready() -> void:
