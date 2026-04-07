@@ -24,7 +24,6 @@ const BROADCAST_ADDR:  String = "255.255.255.255"
 const BROADCAST_INTERVAL: float = 2.0        # sekundy między pakietami beacon
 const MAGIC:           String = "FRUIT_GAME_BEACON"
 
-var _udp_server:   UDPServer          = null   # tryb broadcast (serwer gry)
 var _udp_listener: PacketPeerUDP      = null   # tryb nasłuchu (klient)
 var _beacon_timer: float              = 0.0
 var _server_port:  int                = 7777
