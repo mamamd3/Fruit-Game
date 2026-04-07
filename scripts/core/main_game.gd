@@ -43,6 +43,12 @@ func _ready() -> void:
 	_spawn_player(Global.player3_character, $Players/SpawnPoint3.position, "p3")
 	_spawn_player(Global.player4_character, $Players/SpawnPoint4.position, "p4")
 
+	# Tryb obserwatora: jeśli MultiplayerManager jest dostępny, połącz sygnał.
+	if has_node("/root/MultiplayerManager"):
+		var mm = get_node("/root/MultiplayerManager")
+		if not mm.player_spectating.is_connected(_on_player_spectating):
+			mm.player_spectating.connect(_on_player_spectating)
+
 	$Gnicie.start()
 
 
@@ -135,3 +141,29 @@ func _end_round(winning_character: String) -> void:
 		get_tree().change_scene_to_file("res://Scenes/ui/set_over.tscn")
 	else:
 		get_tree().change_scene_to_file("res://Scenes/ui/round_ended.tscn")
+
+
+## Wyświetla nakładkę "Obserwator" dla gracza który dołączył w trakcie rundy.
+func _on_player_spectating(spectator_peer_id: int) -> void:
+	# Sprawdź czy to my jesteśmy obserwatorem (dotyczy klientów sieciowych).
+	if not multiplayer.has_multiplayer_peer():
+		return
+	if multiplayer.get_unique_id() != spectator_peer_id:
+		return
+	_show_spectator_overlay()
+
+
+func _show_spectator_overlay() -> void:
+	var canvas   := CanvasLayer.new()
+	canvas.layer = 20
+	add_child(canvas)
+
+	var lbl                    := Label.new()
+	lbl.text                   = "TRYB OBSERWATORA\nCzekasz na następną rundę…"
+	lbl.horizontal_alignment   = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.vertical_alignment     = VERTICAL_ALIGNMENT_CENTER
+	lbl.anchor_right           = 1.0
+	lbl.anchor_bottom          = 1.0
+	lbl.add_theme_font_size_override("font_size", 24)
+	lbl.add_theme_color_override("font_color", Color(1.0, 1.0, 0.2, 0.85))
+	canvas.add_child(lbl)

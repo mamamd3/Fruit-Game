@@ -16,7 +16,11 @@ func _ready() -> void:
 func _on_button_pressed() -> void:
 	Global.round_number += 1
 
-	# Przy remisoie nikt nie wybiera modyfikatorów — gnicie = wszyscy remisują,
+	# Obserwatorzy którzy czekali na następną rundę dołączają teraz jako gracze.
+	if has_node("/root/MultiplayerManager"):
+		get_node("/root/MultiplayerManager").promote_spectators()
+
+	# Przy remisie nikt nie wybiera modyfikatorów — gnicie = wszyscy remisują,
 	# więc nikt nie "wygrał" rundy i nie ma kogo nagradzać modem.
 	# Bez tego warunku get_modifier_pickers() nadpisałoby puste [] ustawione
 	# przez _end_round() i gracze niepotrzebnie wybieraliby mody po remisoie.

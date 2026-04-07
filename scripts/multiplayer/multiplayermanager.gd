@@ -14,6 +14,8 @@ signal disconnected
 signal message_received(message: String, sender_peer_id: int)
 signal player_joined(peer_id: int)
 signal player_left(peer_id: int)
+## Emitowany gdy gracz dołącza w trakcie trwającej rundy — trafia do trybu obserwatora.
+signal player_spectating(peer_id: int)
 
 const MAX_PLAYERS: int = 4
 enum Mode { SINGLE_PLAYER, SERVER, CLIENT }
@@ -22,6 +24,8 @@ var current_mode: Mode = Mode.SINGLE_PLAYER
 var peer_id: int = 0
 var multiplayer_peer: ENetMultiplayerPeer
 var connected_players: Dictionary = {}
+## Gracze, którzy dołączyli w trakcie rundy i czekają jako obserwatorzy.
+var spectators: Dictionary = {}
 
 @export var host_address: String = "127.0.0.1"
 @export var port: int = 7777
@@ -78,6 +82,7 @@ func disconnect_network() -> void:
 	current_mode = Mode.SINGLE_PLAYER
 	peer_id = 0
 	connected_players.clear()
+	spectators.clear()
 	disconnected.emit()
 
 func broadcast(message: String) -> void:
@@ -99,18 +104,35 @@ func send_to_player(player_id: int, message: String) -> void:
 
 func _on_peer_connected(new_peer_id: int) -> void:
 	connected_players[new_peer_id] = "Gracz %d" % new_peer_id
-	player_joined.emit(new_peer_id)
+	# Jeśli runda jest w toku, gracz trafia do trybu obserwatora do następnego rozdania.
+	if Global.game_started:
+		spectators[new_peer_id] = true
+		player_spectating.emit(new_peer_id)
+	else:
+		player_joined.emit(new_peer_id)
 
 func _on_peer_disconnected(disconnected_peer_id: int) -> void:
 	if connected_players.has(disconnected_peer_id):
 		connected_players.erase(disconnected_peer_id)
 		player_left.emit(disconnected_peer_id)
+	spectators.erase(disconnected_peer_id)
 
 func _on_connection_failed() -> void:
 	disconnect_network()
 
 func _on_server_disconnected() -> void:
 	disconnect_network()
+
+## Zwraca true jeśli peer czeka w trybie obserwatora.
+func is_spectator(check_peer_id: int) -> bool:
+	return spectators.has(check_peer_id)
+
+## Przesuwa wszystkich obserwatorów do aktywnych graczy po zakończeniu rundy.
+## Wywołaj to z round_ended.gd lub main_game.gd przed nowym rozdaniem.
+func promote_spectators() -> void:
+	for sp_id in spectators.keys():
+		spectators.erase(sp_id)
+		player_joined.emit(sp_id)
 
 func _on_connected_to_server() -> void:
 	peer_id = multiplayer.get_unique_id()

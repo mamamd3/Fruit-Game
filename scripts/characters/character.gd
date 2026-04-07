@@ -27,6 +27,13 @@ var base_speed: float = 0.0
 # die() wywołuje się wielokrotnie → death_order ma duplikaty → crash w ranking.
 var _is_dying: bool = false
 
+# ── Interpolacja sieciowa ─────────────────────────────────────────────────────
+# Ustawiona na true przez main_game.gd dla postaci sterowanych zdalnie.
+# Gdy true: _physics_process jest pomijany, pozycja jest interpolowana w _process.
+var is_remote:          bool    = false
+var _net_target_pos:    Vector2 = Vector2.ZERO
+const NET_LERP_SPEED:   float   = 20.0
+
 # ── Stan modów (flagi odczytywane przez ModifierSystem) ──────────────────────
 var wax_active:              bool  = false   # wax_coat
 var second_fruit_used:       bool  = false   # second_fruit
@@ -102,6 +109,25 @@ func get_input() -> void:
 
 
 # ─────────────────────────────────────────────
+# INTERPOLACJA SIECIOWA
+# ─────────────────────────────────────────────
+
+## Odbiera stan pozycji od serwera i ustawia cel interpolacji.
+## Wywołaj to na zdalnym kliencie (is_remote == true) po każdym pakiecie sieciowym.
+func receive_remote_state(pos: Vector2, vel: Vector2) -> void:
+	_net_target_pos = pos
+	# Prędkość zachowana na wypadek przyszłego użycia (np. przewidywanie ruchu).
+	velocity = vel
+
+
+func _process(delta: float) -> void:
+	if not is_remote or _is_dying:
+		return
+	# Płynna interpolacja zamiast teleportacji przy każdym pakiecie.
+	global_position = global_position.lerp(_net_target_pos, delta * NET_LERP_SPEED)
+
+
+# ─────────────────────────────────────────────
 # PUBLICZNE API
 # ─────────────────────────────────────────────
 
@@ -156,6 +182,11 @@ func _physics_process(delta: float) -> void:
 	# To jest drugi poziom ochrony — _is_dying powinien wystarczyć,
 	# ale is_instance_valid daje dodatkową pewność.
 	if _is_dying:
+		return
+
+	# Zdalnie sterowane postacie nie przetwarzają lokalnego wejścia —
+	# ich pozycja jest interpolowana w _process() na podstawie pakietów sieciowych.
+	if is_remote:
 		return
 
 	# Sprawdź HP — jeśli <= 0 to śmierć
