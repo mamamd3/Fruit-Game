@@ -30,10 +30,13 @@ var _is_dying: bool = false
 # ── Interpolacja sieciowa ─────────────────────────────────────────────────────
 # Ustawiona na true przez main_game.gd dla postaci sterowanych zdalnie.
 # Gdy true: _physics_process jest pomijany, pozycja jest interpolowana w _process.
-var is_remote:          bool    = false:
+var _is_remote:         bool    = false
+var is_remote:          bool:
+	get:
+		return _is_remote
 	set(value):
 		if not _is_dying:
-			is_remote = value
+			_is_remote = value
 var _net_target_pos:    Vector2 = Vector2.ZERO
 const NET_LERP_SPEED:   float   = 20.0
 
