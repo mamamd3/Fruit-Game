@@ -119,8 +119,7 @@ func get_input() -> void:
 # ─────────────────────────────────────────────
 
 ## Odbiera stan pozycji od serwera i ustawia cel interpolacji.
-## Wywołaj to na zdalnym kliencie (33
-== true) po każdym pakiecie sieciowym.
+## Wywołaj to na zdalnym kliencie po każdym pakiecie sieciowym.
 func receive_remote_state(pos: Vector2, vel: Vector2) -> void:
 	_net_target_pos = pos
 	# Prędkość zachowana na wypadek przyszłego użycia (np. przewidywanie ruchu).
