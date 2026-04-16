@@ -30,14 +30,15 @@ func _on_button_pressed() -> void:
 	if Global.is_network_game:
 		if not multiplayer.is_server():
 			return
+		MultiplayerManager.promote_spectators()
 		MultiplayerManager.rpc_sync_round_number.rpc(Global.round_number)
 		await get_tree().create_timer(0.05).timeout
 		if Global.modifier_pickers.size() > 0:
-			MultiplayerManager.server_change_scene("res://Scenes/ui/modifier_select.tscn")
+			MultiplayerManager.server_change_scene("res://scenes/ui/modifier_select.tscn")
 		else:
-			MultiplayerManager.server_change_scene("res://Scenes/main_game.tscn")
+			MultiplayerManager.server_change_scene("res://scenes/main_game.tscn")
 	else:
 		if Global.modifier_pickers.size() > 0:
-			get_tree().change_scene_to_file("res://Scenes/ui/modifier_select.tscn")
+			get_tree().change_scene_to_file("res://scenes/ui/modifier_select.tscn")
 		else:
-			get_tree().change_scene_to_file("res://Scenes/main_game.tscn")
+			get_tree().change_scene_to_file("res://scenes/main_game.tscn")

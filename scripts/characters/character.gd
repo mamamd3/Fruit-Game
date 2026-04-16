@@ -22,6 +22,18 @@ var action_shoot: String = ""
 var network_owner_id: int   = 0
 var _net_sync_timer:  float = 0.0
 
+# Interpolacja sieciowa — wygładza ruch zdalnych postaci
+var _net_target_pos: Vector2    = Vector2.ZERO
+const NET_LERP_SPEED: float     = 20.0
+var _is_remote: bool = false
+var is_remote: bool:
+	get:
+		return _is_remote
+	set(value):
+		_is_remote = value
+		if value:
+			_net_target_pos = global_position
+
 var max_speed:  float = 0.0
 var base_speed: float = 0.0
 
@@ -46,13 +58,23 @@ var streak_bonus_ready:      bool  = false   # fruit_streak
 var is_slowed:  bool  = false
 var slow_timer: float = 0.0
 
-# ── Poison incoming (stacks) ──────────────────────────────────────────────────
-var poison_stacks: int   = 0
-var poison_timer:  float = 0.0
+# ── Poison incoming (stacks z decay) ─────────────────────────────────────────
+# Każdy element to pozostały czas życia stacka (sekundy).
+# apply_poison() dodaje nowy stack (3s), _physics_process odlicza i usuwa wygasłe.
+var poison_stack_timers: Array[float] = []
+var poison_tick_timer:   float        = 0.0
 
 # ── Poison trail (stary mod: poison) ─────────────────────────────────────────
-var poison_zone_scene   = preload("res://Scenes/effects/poison_zone.tscn")
+var poison_zone_scene   = preload("res://scenes/effects/poison_zone.tscn")
 var poison_spawn_timer: float = 0.0
+
+# ── Per-gracz gnicie (rot) ─────────────────────────────────────────────────
+# Bazowy czas gnicia = 120s. Mody zmieniają rot_time_remaining:
+#   rot_shot   — trafiony traci 3s z rot_time
+#   antirot    — +5s na starcie rundy
+#   rot_accelerator — obsługiwany w apply_passive (skraca wrogom w zasięgu)
+const BASE_ROT_TIME: float = 120.0
+var rot_time_remaining: float = BASE_ROT_TIME
 
 # ── Fizyka ────────────────────────────────────────────────────────────────────
 var coyote_time_activated: bool  = false
@@ -76,6 +98,9 @@ func _ready() -> void:
 	# Aplikuj mody startowe (on_apply) — prędkość, HP, flagi
 	ModifierSystem.apply_on_ready(character_name, self)
 
+	# Per-gracz gnicie — po apply_on_ready żeby antirot mogł dodać +5s
+	rot_time_remaining = BASE_ROT_TIME + Global.rot_bonus.get(character_name, 0.0)
+
 	Reloading.wait_time  = Global.characters[character_name]["fire_rate"]
 	health_bar.max_value = Global.base_characters[character_name]["hp"]
 	health_bar.value     = Global.characters[character_name]["hp"]
@@ -97,6 +122,8 @@ func _ready() -> void:
 # INPUT
 # ─────────────────────────────────────────────
 func get_input() -> void:
+	if action_shoot == "":  # bot — sterowany przez BotController
+		return
 	if not Input.is_action_just_pressed(action_shoot):
 		return
 	if not Reloading.is_stopped():
@@ -118,7 +145,7 @@ func apply_slow() -> void:
 func apply_poison() -> void:
 	if preservative_timer > 0.0:
 		return
-	poison_stacks += 1
+	poison_stack_timers.append(3.0)  # nowy stack trwa 3 sekundy
 
 ## Główna brama obrażeń — wywoływana z bullet.gd.
 ## Zwraca faktyczne obrażenia po modyfikacjach (0.0 = zablokowane).
@@ -139,6 +166,11 @@ func receive_damage(raw_dmg: float, attacker_name: String = "") -> float:
 
 	return dmg
 
+## Odbiera pakiet pozycji/prędkości od właściciela zdalnej postaci.
+func receive_remote_state(pos: Vector2, vel: Vector2) -> void:
+	_net_target_pos = pos
+	velocity        = vel
+
 ## Śmierć — wywołaj tylko przez tę funkcję, nigdy queue_free() bezpośrednio.
 func die() -> void:
 	if _is_dying:
@@ -150,6 +182,14 @@ func die() -> void:
 	Global.death_order.append(character_name)
 
 	queue_free()
+
+
+# ─────────────────────────────────────────────
+# PROCESS (interpolacja zdalnych postaci)
+# ─────────────────────────────────────────────
+func _process(delta: float) -> void:
+	if is_remote:
+		global_position = global_position.lerp(_net_target_pos, clampf(delta * NET_LERP_SPEED, 0.0, 1.0))
 
 
 # ─────────────────────────────────────────────
@@ -182,23 +222,37 @@ func _physics_process(delta: float) -> void:
 		if slow_timer <= 0.0:
 			is_slowed = false
 
-	# Poison (incoming stacks) — 5 × stacks co sekundę
-	if poison_stacks > 0:
-		poison_timer -= delta
-		if poison_timer <= 0.0:
-			poison_timer = 1.0
-			Global.characters[character_name]["hp"] -= 5 * poison_stacks
+	# Poison (incoming stacks z decay) — 5 DMG × aktywne stacki co sekundę
+	if poison_stack_timers.size() > 0:
+		# Odliczaj czas życia każdego stacka
+		for i in range(poison_stack_timers.size() - 1, -1, -1):
+			poison_stack_timers[i] -= delta
+			if poison_stack_timers[i] <= 0.0:
+				poison_stack_timers.remove_at(i)
+		# Tick obrażeń co 1s
+		poison_tick_timer -= delta
+		if poison_tick_timer <= 0.0:
+			poison_tick_timer = 1.0
+			var stacks = poison_stack_timers.size()
+			if stacks > 0:
+				Global.take_damage(character_name, 5.0 * stacks, "🧪 Trucizna")
+
+	# Per-gracz gnicie — gdy czas się skończy, gracz umiera
+	rot_time_remaining -= delta
+	if rot_time_remaining <= 0.0:
+		Global.take_damage(character_name, 9999.0, "🦠 Zgnilizna")
 
 	# Mody pasywne
 	ModifierSystem.apply_passive(character_name, delta, self)
 
 	get_input()
 
-	# Ruch poziomy
-	var cur_max    = max_speed * 0.4 if is_slowed else max_speed
-	var x_input    = Input.get_action_strength(action_right) - Input.get_action_strength(action_left)
-	var vel_weight = delta * (ACCELERATION if x_input else FRICTION)
-	velocity.x     = lerp(velocity.x, x_input * cur_max, vel_weight)
+	# Ruch poziomy (pomijany dla botów — BotController steruje velocity)
+	var cur_max = max_speed * 0.4 if is_slowed else max_speed
+	if action_left != "":
+		var x_input    = Input.get_action_strength(action_right) - Input.get_action_strength(action_left)
+		var vel_weight = delta * (ACCELERATION if x_input else FRICTION)
+		velocity.x     = lerp(velocity.x, x_input * cur_max, vel_weight)
 
 	# Grawitacja i coyote time
 	if is_on_floor():
@@ -208,12 +262,12 @@ func _physics_process(delta: float) -> void:
 		if CoyoteTimer.is_stopped() and not coyote_time_activated:
 			CoyoteTimer.start()
 			coyote_time_activated = true
-		if Input.is_action_just_released(action_jump) or is_on_ceiling():
+		if action_jump != "" and Input.is_action_just_released(action_jump) or is_on_ceiling():
 			velocity.y *= 0.5
 		gravity = lerp(gravity, MAX_GRAVITY, 12.0 * delta)
 
-	# Jump buffer
-	if Input.is_action_just_pressed(action_jump) and JumpBufferTimer.is_stopped():
+	# Jump buffer (tylko gracze)
+	if action_jump != "" and Input.is_action_just_pressed(action_jump) and JumpBufferTimer.is_stopped():
 		JumpBufferTimer.start()
 
 	if not JumpBufferTimer.is_stopped() and (not CoyoteTimer.is_stopped() or is_on_floor()):
@@ -231,8 +285,8 @@ func _physics_process(delta: float) -> void:
 			$Right_Head_Nudge4.is_colliding()
 		]
 		if hc.count(true) == 1:
-			if hc[0]: global_position.x += 1.75
-			if hc[2]: global_position.x -= 1.75
+				if hc[0] or hc[1]: global_position.x += 1.75
+				if hc[2] or hc[3]: global_position.x -= 1.75
 
 	# Wall climb nudge
 	if velocity.y > -30 and velocity.y < -5 and abs(velocity.x) > 3:
@@ -257,5 +311,4 @@ func _physics_process(delta: float) -> void:
 # ─────────────────────────────────────────────
 @rpc("any_peer", "call_remote", "unreliable")
 func _rpc_sync_pos(pos: Vector2, vel: Vector2) -> void:
-	position = pos
-	velocity = vel
+	receive_remote_state(pos, vel)

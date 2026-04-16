@@ -63,6 +63,10 @@ func apply_on_ready(char_name: String, char_node: Node) -> void:
 			"speed":
 				char_node.max_speed *= 1.20
 
+			# ── Antyzgnilizna — +5 sek do czasu gnicia ───────────────
+			"antirot":
+				char_node.rot_time_remaining += 5.0
+
 			# ── Stary mod: armor — obsługiwany w apply_on_receive ─────
 			"armor":
 				pass
@@ -85,9 +89,9 @@ func get_extra_bullet_dirs(char_name: String, base_dir: Vector2) -> Array:
 				var perp = Vector2(-base_dir.y, base_dir.x) * 0.15
 				extra_dirs.append((base_dir + perp).normalized())
 
-			# ── Shotgun pestek — 4 pociski w wachlarzu ±15° i ±30° ───
+			# ── Shotgun pestek — 3 pociski w wachlarzu ───────────────
 			"shotgun":
-				for deg in [-30, -15, 15, 30]:
+				for deg in [-25, 0, 25]:
 					extra_dirs.append(base_dir.rotated(deg_to_rad(float(deg))).normalized())
 
 	return extra_dirs
@@ -127,7 +131,9 @@ func apply_on_hit(shooter_name: String, target_node: Node, hit_pos: Vector2, dmg
 
 			# ── Strzał zgnilizny — trafiony gnije o 3 sek szybciej ───
 			"rot_shot":
-				Global.rot_bonus[target_name] = Global.rot_bonus.get(target_name, 0.0) + 3.0
+				var rot_target = _find_character(target_name)
+				if rot_target:
+					rot_target.rot_time_remaining -= 3.0
 
 			# ── Lifesteal — odzyskujesz 30% zadanych obrażeń jako HP ──
 			"lifesteal":
@@ -285,7 +291,7 @@ func apply_passive(char_name: String, delta: float, char_node: Node) -> void:
 				_passive_rot_explosion(char_name, char_node)
 
 			"rot_accelerator":
-				pass  # TODO: wymaga Area2D w scenie postaci
+				_passive_rot_accelerator(char_name, delta, char_node)
 
 			"poison":
 				_passive_poison_trail(char_name, delta, char_node)
@@ -349,7 +355,7 @@ func _passive_poison_trail(char_name: String, delta: float, char_node: Node) -> 
 	var zone: Node    = char_node.poison_zone_scene.instantiate()
 	zone.position     = char_node.global_position
 	zone.shooter_name = char_name
-	char_node.get_tree().root.add_child(zone)
+	char_node.get_tree().root.call_deferred("add_child", zone)
 
 func _update_base_dmg(char_name: String, bonus: float) -> void:
 	if not Global.base_characters.has(char_name):
@@ -358,22 +364,22 @@ func _update_base_dmg(char_name: String, bonus: float) -> void:
 	Global.characters[char_name]["dmg"] = base + bonus
 
 func _spawn_poison_zone(pos: Vector2, shooter_name: String) -> void:
-	var scene = load("res://Scenes/effects/poison_zone.tscn")
+	var scene = load("res://scenes/effects/poison_zone.tscn")
 	if not scene:
 		return
 	var zone: Node    = scene.instantiate()
 	zone.position     = pos
 	zone.shooter_name = shooter_name
-	get_tree().root.add_child(zone)
+	get_tree().root.call_deferred("add_child", zone)
 
 func _spawn_explosion(pos: Vector2, shooter_name: String) -> void:
-	var scene = load("res://Scenes/effects/explosion.tscn")
+	var scene = load("res://scenes/effects/explosion.tscn")
 	if not scene:
 		return
 	var expl: Node   = scene.instantiate()
 	expl.position    = pos
 	expl.shooter_name = shooter_name  # tylko raz — była zduplikowana linia
-	get_tree().root.add_child(expl)
+	get_tree().root.call_deferred("add_child", expl)
 
 func _find_character(char_name: String) -> Node:
 	for node in get_tree().get_nodes_in_group("Players"):
@@ -382,3 +388,15 @@ func _find_character(char_name: String) -> Node:
 		if node.get("character_name") == char_name:
 			return node
 	return null
+
+# Przyspieszacz gnicia — wrogowie w zasięgu 150px gniją 15% szybciej.
+# Zamiast Area2D (wymagałoby zmiany .tscn) sprawdzamy dystans co klatkę.
+const ROT_ACCEL_RANGE: float = 150.0
+func _passive_rot_accelerator(char_name: String, delta: float, char_node: Node) -> void:
+	for node in get_tree().get_nodes_in_group("Players"):
+		if not is_instance_valid(node):
+			continue
+		if node.get("character_name") == char_name:
+			continue
+		if char_node.global_position.distance_to(node.global_position) <= ROT_ACCEL_RANGE:
+			node.rot_time_remaining -= delta * 0.15  # 15% szybsze gnicie

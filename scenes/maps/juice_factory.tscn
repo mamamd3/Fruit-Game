@@ -1,0 +1,68 @@
+[gd_scene load_steps=5 format=3 uid="uid://map_juice_factory"]
+
+[ext_resource type="Script" path="res://scripts/map/map_juice_factory.gd" id="1_bg"]
+
+[sub_resource type="RectangleShape2D" id="ground_shape"]
+size = Vector2(384, 40)
+
+[sub_resource type="RectangleShape2D" id="plat_small"]
+size = Vector2(80, 12)
+
+[sub_resource type="RectangleShape2D" id="plat_wide"]
+size = Vector2(120, 12)
+
+[node name="JuiceFactory" type="Node2D"]
+
+[node name="BG" type="Node2D" parent="."]
+z_index = -10
+script = ExtResource("1_bg")
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="Ground" type="StaticBody2D" parent="Terrain" groups=["Terrain"]]
+position = Vector2(0, 88)
+
+[node name="Col" type="CollisionShape2D" parent="Terrain/Ground"]
+shape = SubResource("ground_shape")
+
+[node name="PlatBotLeft" type="StaticBody2D" parent="Terrain" groups=["Terrain"]]
+position = Vector2(-130, 56)
+
+[node name="Col" type="CollisionShape2D" parent="Terrain/PlatBotLeft"]
+shape = SubResource("plat_small")
+
+[node name="PlatBotRight" type="StaticBody2D" parent="Terrain" groups=["Terrain"]]
+position = Vector2(130, 56)
+
+[node name="Col" type="CollisionShape2D" parent="Terrain/PlatBotRight"]
+shape = SubResource("plat_small")
+
+[node name="PlatMid" type="StaticBody2D" parent="Terrain" groups=["Terrain"]]
+position = Vector2(0, 26)
+
+[node name="Col" type="CollisionShape2D" parent="Terrain/PlatMid"]
+shape = SubResource("plat_wide")
+
+[node name="PlatTopLeft" type="StaticBody2D" parent="Terrain" groups=["Terrain"]]
+position = Vector2(-115, -4)
+
+[node name="Col" type="CollisionShape2D" parent="Terrain/PlatTopLeft"]
+shape = SubResource("plat_small")
+
+[node name="PlatTopRight" type="StaticBody2D" parent="Terrain" groups=["Terrain"]]
+position = Vector2(115, -4)
+
+[node name="Col" type="CollisionShape2D" parent="Terrain/PlatTopRight"]
+shape = SubResource("plat_small")
+
+[node name="SpawnPoint1" type="Marker2D" parent="."]
+position = Vector2(-140, 40)
+
+[node name="SpawnPoint2" type="Marker2D" parent="."]
+position = Vector2(140, 40)
+
+[node name="SpawnPoint3" type="Marker2D" parent="."]
+position = Vector2(-50, 10)
+
+[node name="SpawnPoint4" type="Marker2D" parent="."]
+position = Vector2(50, 10)

@@ -1,0 +1,83 @@
+[gd_scene load_steps=6 format=3 uid="uid://map_blender"]
+
+[ext_resource type="Script" path="res://scripts/map/map_blender.gd" id="1_bg"]
+
+[sub_resource type="RectangleShape2D" id="ground_shape"]
+size = Vector2(384, 40)
+
+[sub_resource type="RectangleShape2D" id="plat_center"]
+size = Vector2(100, 14)
+
+[sub_resource type="RectangleShape2D" id="plat_wall"]
+size = Vector2(40, 10)
+
+[sub_resource type="RectangleShape2D" id="wall_shape"]
+size = Vector2(8, 200)
+
+[node name="Blender" type="Node2D"]
+
+[node name="BG" type="Node2D" parent="."]
+z_index = -10
+script = ExtResource("1_bg")
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="Ground" type="StaticBody2D" parent="Terrain" groups=["Terrain"]]
+position = Vector2(0, 88)
+
+[node name="Col" type="CollisionShape2D" parent="Terrain/Ground"]
+shape = SubResource("ground_shape")
+
+[node name="WallLeft" type="StaticBody2D" parent="Terrain" groups=["Terrain"]]
+position = Vector2(-188, 0)
+
+[node name="Col" type="CollisionShape2D" parent="Terrain/WallLeft"]
+shape = SubResource("wall_shape")
+
+[node name="WallRight" type="StaticBody2D" parent="Terrain" groups=["Terrain"]]
+position = Vector2(188, 0)
+
+[node name="Col" type="CollisionShape2D" parent="Terrain/WallRight"]
+shape = SubResource("wall_shape")
+
+[node name="Center" type="StaticBody2D" parent="Terrain" groups=["Terrain"]]
+position = Vector2(0, 37)
+
+[node name="Col" type="CollisionShape2D" parent="Terrain/Center"]
+shape = SubResource("plat_center")
+
+[node name="ShelfBotLeft" type="StaticBody2D" parent="Terrain" groups=["Terrain"]]
+position = Vector2(-168, 15)
+
+[node name="Col" type="CollisionShape2D" parent="Terrain/ShelfBotLeft"]
+shape = SubResource("plat_wall")
+
+[node name="ShelfBotRight" type="StaticBody2D" parent="Terrain" groups=["Terrain"]]
+position = Vector2(168, 15)
+
+[node name="Col" type="CollisionShape2D" parent="Terrain/ShelfBotRight"]
+shape = SubResource("plat_wall")
+
+[node name="ShelfTopLeft" type="StaticBody2D" parent="Terrain" groups=["Terrain"]]
+position = Vector2(-168, -35)
+
+[node name="Col" type="CollisionShape2D" parent="Terrain/ShelfTopLeft"]
+shape = SubResource("plat_wall")
+
+[node name="ShelfTopRight" type="StaticBody2D" parent="Terrain" groups=["Terrain"]]
+position = Vector2(168, -35)
+
+[node name="Col" type="CollisionShape2D" parent="Terrain/ShelfTopRight"]
+shape = SubResource("plat_wall")
+
+[node name="SpawnPoint1" type="Marker2D" parent="."]
+position = Vector2(-160, 0)
+
+[node name="SpawnPoint2" type="Marker2D" parent="."]
+position = Vector2(160, 0)
+
+[node name="SpawnPoint3" type="Marker2D" parent="."]
+position = Vector2(-40, 20)
+
+[node name="SpawnPoint4" type="Marker2D" parent="."]
+position = Vector2(40, 20)

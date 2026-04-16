@@ -2,27 +2,37 @@ extends Node2D
 
 var character_scenes = {
 	"Strawberry": {
-		"scene":  preload("res://Scenes/characters/strawberry.tscn"),
-		"bullet": preload("res://Scenes/bullets/strawberry_bullet.tscn")
+		"scene":  preload("res://scenes/characters/strawberry.tscn"),
+		"bullet": preload("res://scenes/bullets/strawberry_bullet.tscn")
 	},
 	"Grape": {
-		"scene":  preload("res://Scenes/characters/grape.tscn"),
-		"bullet": preload("res://Scenes/bullets/grape_bullet.tscn")
+		"scene":  preload("res://scenes/characters/grape.tscn"),
+		"bullet": preload("res://scenes/bullets/grape_bullet.tscn")
 	},
 	"Orange": {
-		"scene":  preload("res://Scenes/characters/orange.tscn"),
-		"bullet": preload("res://Scenes/bullets/orange_bullet.tscn")
+		"scene":  preload("res://scenes/characters/orange.tscn"),
+		"bullet": preload("res://scenes/bullets/orange_bullet.tscn")
 	},
 	"Pineapple": {
-		"scene":  preload("res://Scenes/characters/pineapple.tscn"),
-		"bullet": preload("res://Scenes/bullets/pineapple_bullet.tscn")
+		"scene":  preload("res://scenes/characters/pineapple.tscn"),
+		"bullet": preload("res://scenes/bullets/pineapple_bullet.tscn")
 	}
 }
 
 var bullet_scenes:     Dictionary = {}
 var player_characters: Dictionary = {}
-var kill_feed_script = preload("res://scripts/ui/kill_feed.gd")
+var kill_feed_script   = preload("res://scripts/ui/kill_feed.gd")
+var bot_controller_scn = preload("res://scripts/ai/bot_controller.gd")
+var melee_hit_scene    = preload("res://scenes/effects/melee_hit.tscn")
 var _ending_round: bool = false
+
+var map_scenes: Array = [
+	preload("res://scenes/maps/fruit_bowl.tscn"),
+	preload("res://scenes/maps/juice_factory.tscn"),
+	preload("res://scenes/maps/canopy.tscn"),
+	preload("res://scenes/maps/blender.tscn"),
+]
+var current_map: Node2D = null
 
 
 func _ready() -> void:
@@ -36,10 +46,15 @@ func _ready() -> void:
 		if Global.modifiers[character].size() > 0:
 			print(character + " mody: " + str(Global.modifiers[character]))
 
-	_spawn_player(Global.player1_character, $Players/SpawnPoint1.position, "p1")
-	_spawn_player(Global.player2_character, $Players/SpawnPoint2.position, "p2")
-	_spawn_player(Global.player3_character, $Players/SpawnPoint3.position, "p3")
-	_spawn_player(Global.player4_character, $Players/SpawnPoint4.position, "p4")
+	# Losowa mapa
+	_load_random_map()
+
+	# Spawn z pozycji mapy
+	var spawns = _get_spawn_points()
+	_spawn_player(Global.player1_character, spawns[0], "p1")
+	_spawn_player(Global.player2_character, spawns[1], "p2")
+	_spawn_player(Global.player3_character, spawns[2], "p3")
+	_spawn_player(Global.player4_character, spawns[3], "p4")
 
 	$Gnicie.start()
 
@@ -61,12 +76,26 @@ func _spawn_player(character_name: String, spawn_pos: Vector2, player_prefix: St
 	player.shoot.connect(func(pos, dir): _on_shoot(pos, dir, player_prefix))
 	$Players.add_child(player)
 
+	# Bot AI — jeśli slot to bot, dodaj kontroler i wyłącz input gracza
+	var slot = int(player_prefix.substr(1))  # "p1" → 1
+	if Global.slot_types.get(slot, "player") == "bot":
+		var bot = Node.new()
+		bot.set_script(bot_controller_scn)
+		bot.name = "BotController"
+		player.add_child(bot)
+		bot.setup(player, character_name)
+		# Wyłącz input gracza — bot steruje ruchem
+		player.action_left  = ""
+		player.action_right = ""
+		player.action_jump  = ""
+		player.action_shoot = ""
+
 	# W trybie sieciowym przypisz właściciela węzła
 	if Global.is_network_game:
-		var slot     = int(player_prefix.substr(1))  # "p1" → 1
 		var owner_id = MultiplayerManager.get_peer_for_slot(slot)
 		if owner_id > 0:
 			player.network_owner_id = owner_id
+			player.is_remote = (owner_id != multiplayer.get_unique_id())
 
 
 func _setup_kill_feed() -> void:
@@ -85,8 +114,14 @@ func _setup_kill_feed() -> void:
 func _on_shoot(pos: Vector2, dir: Vector2, player_prefix: String) -> void:
 	if _ending_round:
 		return
+	var char_name = player_characters.get(player_prefix, "")
+
+	# Ananas = MELEE — cios obszarowy zamiast pocisku
+	if char_name == "Pineapple":
+		_do_melee_attack(pos, dir, char_name)
+		return
+
 	if Global.is_network_game:
-		# Strzelający klient rozsyła żądanie spawnu pocisku do wszystkich
 		_rpc_spawn_bullet.rpc(pos, dir, player_prefix)
 	else:
 		_do_spawn_bullet(pos, dir, player_prefix)
@@ -94,6 +129,14 @@ func _on_shoot(pos: Vector2, dir: Vector2, player_prefix: String) -> void:
 
 @rpc("any_peer", "call_local", "reliable")
 func _rpc_spawn_bullet(pos: Vector2, dir: Vector2, player_prefix: String) -> void:
+	# Walidacja: nadawca może strzelać tylko swoją postacią
+	if Global.is_network_game and multiplayer.is_server():
+		var sender = multiplayer.get_remote_sender_id()
+		if sender > 0:
+			var expected_slot = int(player_prefix.substr(1))
+			var actual_slot = MultiplayerManager.player_slots.get(sender, -1)
+			if expected_slot != actual_slot:
+				return  # cheat attempt — ignoruj
 	_do_spawn_bullet(pos, dir, player_prefix)
 
 
@@ -168,11 +211,68 @@ func _rpc_end_round(winner: String) -> void:
 func _do_scene_change() -> void:
 	if Global.is_set_complete():
 		if Global.is_network_game:
-			MultiplayerManager.server_change_scene("res://Scenes/ui/set_over.tscn")
+			MultiplayerManager.server_change_scene("res://scenes/ui/set_over.tscn")
 		else:
-			get_tree().change_scene_to_file("res://Scenes/ui/set_over.tscn")
+			get_tree().change_scene_to_file("res://scenes/ui/set_over.tscn")
 	else:
 		if Global.is_network_game:
-			MultiplayerManager.server_change_scene("res://Scenes/ui/round_ended.tscn")
+			MultiplayerManager.server_change_scene("res://scenes/ui/round_ended.tscn")
 		else:
-			get_tree().change_scene_to_file("res://Scenes/ui/round_ended.tscn")
+			get_tree().change_scene_to_file("res://scenes/ui/round_ended.tscn")
+
+
+# ─── SPECTATOR OVERLAY ────────────────────────────────────────────────────────
+
+## Serwer wywołuje tę funkcję na kliencie-obserwatorze, aby pokazał nakładkę.
+@rpc("authority", "call_remote", "reliable")
+func _rpc_notify_spectating() -> void:
+	_show_spectator_overlay()
+
+func _show_spectator_overlay() -> void:
+	var canvas        = CanvasLayer.new()
+	canvas.layer      = 20
+	add_child(canvas)
+	var lbl           = Label.new()
+	lbl.text          = "OBSERWATOR"
+	lbl.add_theme_font_size_override("font_size", 32)
+	lbl.anchor_right  = 1.0
+	lbl.anchor_bottom = 1.0
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.vertical_alignment   = VERTICAL_ALIGNMENT_CENTER
+	canvas.add_child(lbl)
+
+
+# ─── MELEE ATTACK (Pineapple) ────────────────────────────────────────────────
+func _do_melee_attack(pos: Vector2, dir: Vector2, char_name: String) -> void:
+	var hit = melee_hit_scene.instantiate() as Area2D
+	hit.position      = pos + dir * 25.0  # offset w kierunku ataku
+	hit.shooter_name  = char_name
+	hit.hit_direction = dir
+	$Bullets.add_child(hit)  # reuse Bullets node jako kontener
+
+
+# ─── MAP LOADING ─────────────────────────────────────────────────────────────
+func _load_random_map() -> void:
+	# Usuń stary teren z main_game.tscn (jeśli jest)
+	if has_node("Terrain"):
+		$Terrain.queue_free()
+
+	var scene = map_scenes.pick_random()
+	current_map = scene.instantiate()
+	current_map.name = "MapInstance"
+	add_child(current_map)
+	move_child(current_map, 0)  # tło pod wszystkim
+
+	print("Mapa: " + current_map.name)
+
+func _get_spawn_points() -> Array:
+	# Szukaj SpawnPoint1-4 w załadowanej mapie
+	var points: Array = []
+	for i in range(1, 5):
+		var sp = current_map.get_node_or_null("SpawnPoint" + str(i))
+		if sp:
+			points.append(sp.position)
+		else:
+			# Fallback — domyślne pozycje
+			points.append(Vector2(-100 + i * 50, 50))
+	return points

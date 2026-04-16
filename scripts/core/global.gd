@@ -10,6 +10,9 @@ var player2_character: String = ""
 var player3_character: String = ""
 var player4_character: String = ""
 
+# Typ slotu: "player" lub "bot" — ustawiany w menu
+var slot_types: Dictionary = { 1: "player", 2: "player", 3: "player", 4: "player" }
+
 var round_over:   bool   = false
 var game_started: bool   = false
 var winner:       String = ""
@@ -33,12 +36,18 @@ var modifier_pickers: Array = []
 
 var shot_counter: Dictionary = {}
 
-var base_characters: Dictionary = {
+# Oryginalne staty — NIGDY nie modyfikuj tego słownika.
+# Służy jako source-of-truth przy każdym reset_all().
+const ORIGINAL_BASE_CHARACTERS: Dictionary = {
 	"Strawberry": { "hp": 100, "speed": 80,  "dmg": 25, "range": 100, "fire_rate": 0.8 },
 	"Orange":     { "hp": 50,  "speed": 90,  "dmg": 50, "range": 400, "fire_rate": 2.5 },
-	"Pineapple":  { "hp": 200, "speed": 150, "dmg": 30, "range": 80,  "fire_rate": 0.5 },
+	"Pineapple":  { "hp": 200, "speed": 60,  "dmg": 30, "range": 80,  "fire_rate": 0.5 },
 	"Grape":      { "hp": 80,  "speed": 100, "dmg": 15, "range": 150, "fire_rate": 0.2 },
 }
+
+# Kopia robocza — może być modyfikowana przez mody (thick_skin, seed_collector itp.)
+# Resetowana z ORIGINAL_BASE_CHARACTERS na początku każdej rundy.
+var base_characters: Dictionary = {}
 var characters: Dictionary = {}
 
 var modifier_registry: Dictionary = {
@@ -46,7 +55,7 @@ var modifier_registry: Dictionary = {
 	"sniper_seed":        { "name": "Pestka snajpera",        "emoji": "🎯",  "category": "projectile", "trigger": "on_shoot",   "desc": "Pocisk leci o 25% szybciej." },
 	"fermentation":       { "name": "Fermentacja",            "emoji": "🧪",  "category": "projectile", "trigger": "on_hit",     "desc": "Każdy pocisk zatruwa wroga na 3 sek." },
 	"ripe_shot":          { "name": "Dojrzały strzał",        "emoji": "🍑",  "category": "projectile", "trigger": "on_shoot",   "desc": "Co 3. strzał zadaje +30% obrażeń." },
-	"shotgun":            { "name": "Shotgun pestek",         "emoji": "💥",  "category": "projectile", "trigger": "on_shoot",   "desc": "Wystrzelasz 4 dodatkowe pociski w wachlarzu." },
+	"shotgun":            { "name": "Shotgun pestek",         "emoji": "💥",  "category": "projectile", "trigger": "on_shoot",   "desc": "Wystrzelasz 3 dodatkowe pociski w wachlarzu." },
 	"radioactive_seed":   { "name": "Radioaktywna pestka",    "emoji": "☢️",  "category": "projectile", "trigger": "on_hit",     "desc": "Przy trafieniu zostaje toksyczna plama na 3 sek." },
 	"rot_shot":           { "name": "Strzał zgnilizny",       "emoji": "🦠",  "category": "projectile", "trigger": "on_hit",     "desc": "Trafiony wróg gnije o 3 sek szybciej." },
 	"magnetic_seed":      { "name": "Magnetyczna pestka",     "emoji": "🧲",  "category": "projectile", "trigger": "on_shoot",   "desc": "Pocisk skręca w kierunku wroga w zasięgu 2m." },
@@ -83,21 +92,28 @@ var modifier_registry: Dictionary = {
 }
 
 var all_modifiers: Array = [
+	# Projectile
 	"double_shot", "sniper_seed", "fermentation", "ripe_shot", "shotgun",
 	"radioactive_seed", "rot_shot", "magnetic_seed",
+	"lifesteal", "explosive", "sticky", "spinning",
+	# Defense
 	"thick_skin", "juicy_core", "wax_coat", "thorn_shield", "hard_fruit",
 	"antirot", "preservative", "second_fruit", "still_green", "stone_seed",
+	"armor",
+	# Bounce
 	"extra_bounce", "accelerating_bounce", "destroying_bounce",
-	"magnetic_bounce", "mirror_skin", "rage_bounce",
+	"magnetic_bounce", "mirror_skin", "rage_bounce", "bouncy",
+	# Passive / Area
 	"ripe_sprint", "rot_accelerator", "rot_explosion",
 	"seed_collector", "fruit_streak", "mod_duplicator",
+	"poison", "speed",
 ]
 
 func _ready() -> void:
-	# Pełny reset przy każdym starcie gry
-	round_number = 1
-	points       = {}
-	modifiers    = {}
+	base_characters = ORIGINAL_BASE_CHARACTERS.duplicate(true)
+	round_number    = 1
+	points          = {}
+	modifiers       = {}
 	reset_selection()
 	reset_all()
 
@@ -111,7 +127,8 @@ func reset_selection() -> void:
 	player4_character = ""
 
 func reset_all() -> void:
-	characters   = base_characters.duplicate(true)
+	base_characters = ORIGINAL_BASE_CHARACTERS.duplicate(true)
+	characters      = ORIGINAL_BASE_CHARACTERS.duplicate(true)
 	shot_counter = {}
 	rot_bonus    = {}
 	alive        = {}
@@ -141,11 +158,17 @@ func pick_character(character_name: String) -> void:
 		2: player2_character = character_name
 		3: player3_character = character_name
 		4: player4_character = character_name
-	available_characters.erase(character_name)
+	if character_name != "":
+		available_characters.erase(character_name)
 	current_picking_player += 1
 
 func all_picked() -> bool:
-	return current_picking_player > total_players
+	# Przeskocz sloty "off" w liczniku
+	var last_active_slot = 0
+	for i in range(1, 5):
+		if slot_types.get(i, "off") != "off":
+			last_active_slot = i
+	return current_picking_player > last_active_slot
 
 func is_set_complete() -> bool:
 	return round_number % rounds_per_set == 0

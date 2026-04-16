@@ -10,6 +10,7 @@ signal disconnected
 signal message_received(message: String, sender_peer_id: int)
 signal player_joined(peer_id: int)
 signal player_left(peer_id: int)
+signal player_spectating(peer_id: int)
 signal pick_synced                                        # po syncu wyboru postaci
 signal modifier_applied(char_name: String, mod_id: String)  # po syncu moda
 
@@ -22,6 +23,7 @@ var multiplayer_peer: ENetMultiplayerPeer
 
 var connected_players: Dictionary = {}  # peer_id → nazwa wyświetlana
 var player_slots:      Dictionary = {}  # peer_id → slot (1..4)
+var spectators:        Dictionary = {}  # peer_id → nazwa — gracze dołączający w trakcie gry
 
 var host_address: String = "127.0.0.1"
 var port:         int    = 7777
@@ -90,6 +92,7 @@ func disconnect_network() -> void:
 	peer_id                  = 0
 	connected_players.clear()
 	player_slots.clear()
+	spectators.clear()
 	Global.is_network_game   = false
 	Global.local_player_slot = 0
 	disconnected.emit()
@@ -168,7 +171,7 @@ func request_pick(character_name: String) -> void:
 		await get_tree().create_timer(0.2).timeout
 		Global.rpc_reset_all.rpc()
 		await get_tree().create_timer(0.05).timeout
-		_rpc_change_scene.rpc("res://Scenes/main_game.tscn")
+		_rpc_change_scene.rpc("res://scenes/main_game.tscn")
 
 # Serwer rozsyła aktualny stan wyboru postaci do wszystkich.
 @rpc("authority", "call_local", "reliable")
@@ -236,6 +239,13 @@ func send_to_player(player_id: int, message: String) -> void:
 
 # ─── PEER CALLBACKS ───────────────────────────────────────────────────────────
 func _on_peer_connected(new_peer_id: int) -> void:
+	# Gra już w toku — nowy gracz zostaje obserwatorem
+	if Global.game_started:
+		spectators[new_peer_id] = "Obserwator %d" % new_peer_id
+		_notify_player_spectating.rpc_id(new_peer_id, new_peer_id)
+		player_spectating.emit(new_peer_id)
+		return
+
 	var slot = _assign_slot(new_peer_id)
 	connected_players[new_peer_id] = "Gracz %d" % slot
 
@@ -246,6 +256,26 @@ func _on_peer_connected(new_peer_id: int) -> void:
 	sync_total_players.rpc(Global.total_players)
 
 	player_joined.emit(new_peer_id)
+
+@rpc("authority", "call_remote", "reliable")
+func _notify_player_spectating(spectating_peer_id: int) -> void:
+	player_spectating.emit(spectating_peer_id)
+
+## Promuje obserwatorów do aktywnych graczy na początku następnej rundy.
+## Wywołuj tylko na serwerze, przed zmianą sceny.
+func promote_spectators() -> void:
+	if not multiplayer.is_server():
+		return
+	for spid in spectators.keys():
+		var slot = _assign_slot(spid)
+		if slot == -1:
+			continue  # brak wolnych slotów
+		connected_players[spid] = spectators[spid]
+		_rpc_set_my_slot.rpc_id(spid, slot)
+	spectators.clear()
+	_rpc_sync_player_list.rpc(connected_players, player_slots)
+	Global.total_players = connected_players.size()
+	sync_total_players.rpc(Global.total_players)
 
 func _on_peer_disconnected(disconnected_peer_id: int) -> void:
 	if connected_players.has(disconnected_peer_id):
