@@ -25,7 +25,7 @@
 |--------|-----|-------|-----|-----------|-----|------|
 | 🍓 Strawberry | 100 | 80 | 25 | 0.8s | Ranged | Klasyczny, zrównoważony |
 | 🍊 Orange | 50 | 90 | 50 | 2.5s | Ranged | Szklany snajper — mało HP, dużo DMG |
-| 🍍 Pineapple | 200 | 150 | 30 | 0.5s | **MELEE** | Powolny tank z ciosem obszarowym |
+| 🍍 Pineapple | 200 | 60 | 30 | 0.5s | **MELEE** | Powolny tank z ciosem obszarowym |
 | 🍇 Grape | 80 | 100 | 15 | 0.2s | Ranged | Szybkostrzelny, niski DMG |
 
 ### Pineapple — atak melee

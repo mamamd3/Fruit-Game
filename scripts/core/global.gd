@@ -41,7 +41,7 @@ var shot_counter: Dictionary = {}
 const ORIGINAL_BASE_CHARACTERS: Dictionary = {
 	"Strawberry": { "hp": 100, "speed": 80,  "dmg": 25, "range": 100, "fire_rate": 0.8 },
 	"Orange":     { "hp": 50,  "speed": 90,  "dmg": 50, "range": 400, "fire_rate": 2.5 },
-	"Pineapple":  { "hp": 200, "speed": 150, "dmg": 30, "range": 80,  "fire_rate": 0.5 },
+	"Pineapple":  { "hp": 200, "speed": 60,  "dmg": 30, "range": 80,  "fire_rate": 0.5 },
 	"Grape":      { "hp": 80,  "speed": 100, "dmg": 15, "range": 150, "fire_rate": 0.2 },
 }
 
