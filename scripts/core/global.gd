@@ -195,6 +195,13 @@ func reset_all() -> void:
 		alive[ch] = true
 		if not points.has(ch):    points[ch]    = 0
 		if not modifiers.has(ch): modifiers[ch] = []
+		
+		# Wbudowane modyfikatory postaci
+		if ch == "Lemon" and not "fermentation" in modifiers[ch]:
+			modifiers[ch].append("fermentation")
+		if ch == "Watermelon" and not "armor" in modifiers[ch]:
+			modifiers[ch].append("armor")
+			
 	round_over   = false
 	game_started = false
 	winner       = ""
