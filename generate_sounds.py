@@ -19,52 +19,53 @@ def save_wav(filename, samples):
 
 def generate_shoot():
     samples = []
-    duration = 0.15
-    for i in range(int(SAMPLE_RATE * duration)):
-        t = i / SAMPLE_RATE
-        # Envelope: fast attack, exponential decay
-        env = math.exp(-t * 20)
-        # Pitch drop
-        freq = 800 - 4000 * t
-        freq = max(100, freq)
-        # Square wave
-        val = 1.0 if math.sin(2 * math.pi * freq * t) > 0 else -1.0
-        samples.append(val * env * 0.3)
-    return samples
-
-def generate_jump():
-    samples = []
-    duration = 0.2
-    for i in range(int(SAMPLE_RATE * duration)):
-        t = i / SAMPLE_RATE
-        env = 1.0 - (t / duration)
-        freq = 300 + 1000 * t
-        val = 1.0 if math.sin(2 * math.pi * freq * t) > 0 else -1.0
-        samples.append(val * env * 0.3)
-    return samples
-
-def generate_hit():
-    samples = []
     duration = 0.1
     for i in range(int(SAMPLE_RATE * duration)):
         t = i / SAMPLE_RATE
         env = math.exp(-t * 30)
-        val = random.uniform(-1.0, 1.0)
+        # Squeaky popping sound: high pitch dropping fast
+        freq = 1500 - 8000 * t
+        freq = max(300, freq)
+        val = math.sin(2 * math.pi * freq * t)
+        samples.append(val * env * 0.4)
+    return samples
+
+def generate_jump():
+    samples = []
+    duration = 0.25
+    for i in range(int(SAMPLE_RATE * duration)):
+        t = i / SAMPLE_RATE
+        env = 1.0 - (t / duration)
+        # Classic "Boing"
+        freq = 400 + 1500 * t
+        val = math.sin(2 * math.pi * freq * t)
+        samples.append(val * env * 0.4)
+    return samples
+
+def generate_hit():
+    samples = []
+    duration = 0.15
+    for i in range(int(SAMPLE_RATE * duration)):
+        t = i / SAMPLE_RATE
+        env = math.exp(-t * 15)
+        # Squeaky "Ouch" (high pitched fast vibrato)
+        vibrato = math.sin(2 * math.pi * 30 * t) * 50
+        freq = 1200 + vibrato
+        val = math.sin(2 * math.pi * freq * t)
         samples.append(val * env * 0.4)
     return samples
 
 def generate_death():
     samples = []
-    duration = 0.8
+    duration = 0.5
     for i in range(int(SAMPLE_RATE * duration)):
         t = i / SAMPLE_RATE
         env = 1.0 - (t / duration)
-        freq = 200 - 150 * t
-        freq = max(20, freq)
-        # Noise mixed with saw
-        val = (t * freq % 1.0) * 2.0 - 1.0
-        noise = random.uniform(-1.0, 1.0) * 0.5
-        samples.append((val + noise) * env * 0.4)
+        # Squeaky "Oh no!" falling down
+        freq = 1500 - 2000 * t
+        freq = max(200, freq)
+        val = math.sin(2 * math.pi * freq * t)
+        samples.append(val * env * 0.4)
     return samples
 
 def generate_ui_click():

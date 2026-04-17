@@ -31,6 +31,7 @@ var map_scenes: Array = [
 	preload("res://scenes/maps/juice_factory.tscn"),
 	preload("res://scenes/maps/canopy.tscn"),
 	preload("res://scenes/maps/blender.tscn"),
+	preload("res://scenes/maps/watermelon_caves.tscn"),
 ]
 var current_map: Node2D = null
 
