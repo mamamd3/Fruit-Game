@@ -14,6 +14,10 @@ func _draw():
 			_draw_orange()
 		"Pineapple":
 			_draw_pineapple()
+		"Lemon":
+			_draw_lemon()
+		"Watermelon":
+			_draw_watermelon()
 
 func _draw_strawberry():
 	# Czerwone ciało - trójkąt zaokrąglony (od góry szeroki, dół wąski)
