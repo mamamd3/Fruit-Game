@@ -142,7 +142,7 @@ func _setup_gamepads() -> void:
 		
 		var ev_shoot_trigger = InputEventJoypadMotion.new()
 		ev_shoot_trigger.device = i
-		ev_shoot_trigger.axis = JOY_AXIS_RIGHT_TRIGGER
+		ev_shoot_trigger.axis = JOY_AXIS_TRIGGER_RIGHT
 		ev_shoot_trigger.axis_value = 1.0
 		InputMap.action_add_event(prefix + "_shoot", ev_shoot_trigger)
 		
