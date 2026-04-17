@@ -94,15 +94,19 @@ func _count_off_slots() -> int:
 
 
 func _on_strawberry_2_pressed():
+	AudioManager.play_ui_click()
 	pick("Strawberry")
 
 func _on_grape_2_pressed():
+	AudioManager.play_ui_click()
 	pick("Grape")
 
 func _on_orange_2_pressed():
+	AudioManager.play_ui_click()
 	pick("Orange")
 
 func _on_pineapple_2_pressed():
+	AudioManager.play_ui_click()
 	pick("Pineapple")
 
 func pick(character_name: String):

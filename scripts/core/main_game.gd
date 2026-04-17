@@ -56,6 +56,7 @@ func _ready() -> void:
 	_spawn_player(Global.player3_character, spawns[2], "p3")
 	_spawn_player(Global.player4_character, spawns[3], "p4")
 
+	AudioManager.play_bgm()
 	$Gnicie.start()
 
 
@@ -146,6 +147,8 @@ func _do_spawn_bullet(pos: Vector2, dir: Vector2, player_prefix: String) -> void
 	var char_name: String = player_characters.get(player_prefix, "")
 	if char_name == "":
 		return
+
+	AudioManager.play_sound("shoot")
 
 	var bullet = bullet_scenes[player_prefix].instantiate() as Area2D
 	$Bullets.add_child(bullet)
@@ -244,6 +247,7 @@ func _show_spectator_overlay() -> void:
 
 # ─── MELEE ATTACK (Pineapple) ────────────────────────────────────────────────
 func _do_melee_attack(pos: Vector2, dir: Vector2, char_name: String) -> void:
+	AudioManager.play_sound("melee")
 	var hit = melee_hit_scene.instantiate() as Area2D
 	hit.position      = pos + dir * 25.0  # offset w kierunku ataku
 	hit.shooter_name  = char_name

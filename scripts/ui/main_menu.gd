@@ -32,6 +32,7 @@ func _ready() -> void:
 	MultiplayerManager.connected.connect(_on_mp_connected)
 	MultiplayerManager.disconnected.connect(_on_mp_disconnected)
 	_update_slot_buttons()
+	AudioManager.play_bgm()
 
 
 # ═══════════════════════════════════════════════════════
@@ -54,12 +55,13 @@ func _cycle_slot(index: int) -> void:
 		slot_states[0] = "player"
 	_update_slot_buttons()
 
-func _on_slot_1_pressed() -> void: _cycle_slot(0)
-func _on_slot_2_pressed() -> void: _cycle_slot(1)
-func _on_slot_3_pressed() -> void: _cycle_slot(2)
-func _on_slot_4_pressed() -> void: _cycle_slot(3)
+func _on_slot_1_pressed() -> void: AudioManager.play_ui_click(); _cycle_slot(0)
+func _on_slot_2_pressed() -> void: AudioManager.play_ui_click(); _cycle_slot(1)
+func _on_slot_3_pressed() -> void: AudioManager.play_ui_click(); _cycle_slot(2)
+func _on_slot_4_pressed() -> void: AudioManager.play_ui_click(); _cycle_slot(3)
 
 func _on_start_local_pressed() -> void:
+	AudioManager.play_ui_click()
 	MultiplayerManager.start_single_player()
 
 	# Ustaw slot_types i total_players
@@ -83,6 +85,7 @@ func _on_start_local_pressed() -> void:
 # ═══════════════════════════════════════════════════════
 
 func _on_host_pressed() -> void:
+	AudioManager.play_ui_click()
 	var p = int(port_input.text)
 	if p <= 0: p = 7777
 	MultiplayerManager.port = p
@@ -90,6 +93,7 @@ func _on_host_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/ui/lobby.tscn")
 
 func _on_join_pressed() -> void:
+	AudioManager.play_ui_click()
 	var addr = ip_input.text.strip_edges()
 	var p    = int(port_input.text)
 	if addr.is_empty(): addr = "127.0.0.1"

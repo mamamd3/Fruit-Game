@@ -158,6 +158,8 @@ func receive_damage(raw_dmg: float, attacker_name: String = "") -> float:
 	if dmg <= 0.0:
 		return 0.0
 
+	AudioManager.play_sound("hit")
+
 	# Sprawdź czy cios byłby śmiertelny
 	var cur_hp = float(Global.characters[character_name]["hp"])
 	if cur_hp - dmg <= 0.0:
@@ -177,6 +179,8 @@ func die() -> void:
 
 		return
 	_is_dying = true
+	
+	AudioManager.play_sound("death")
 
 	Global.alive[character_name] = false
 	Global.death_order.append(character_name)
@@ -275,6 +279,7 @@ func _physics_process(delta: float) -> void:
 		JumpBufferTimer.stop()
 		CoyoteTimer.stop()
 		coyote_time_activated = true
+		AudioManager.play_sound("jump")
 
 	# Head nudge — pozwala wejść pod niskie platformy
 	if velocity.y < JUMP_HEIGHT / 2.0:

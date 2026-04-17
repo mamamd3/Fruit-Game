@@ -219,13 +219,13 @@ Fruit-Game/
 | Fizyka: coyote time, jump buffer, head nudge | ✅ |
 | Odbijanie pocisków od terenu | ✅ |
 | Etykiety z nazwami nad postaciami | ✅ |
+| Dźwięki i muzyka | ✅ |
 
 ### 🔧 Do zrobienia (backlog)
 
 | Funkcja | Priorytet |
 |---------|-----------|
 | Więcej map / losowa mapa | 🔴 Wysoki |
-| Dźwięki / muzyka | 🔴 Wysoki |
 | Animacje postaci (idle, walk, jump, attack) | 🔴 Wysoki |
 | Pixel art sprite'y zamiast draw-based | 🟡 Średni |
 | Ekran tytułowy / splash screen | 🟡 Średni |

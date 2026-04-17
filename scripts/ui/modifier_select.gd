@@ -101,6 +101,6 @@ func pick(index: int) -> void:
 		show_cards_for_current_picker()
 
 
-func _on_card_1_pressed() -> void: pick(0)
-func _on_card_2_pressed() -> void: pick(1)
-func _on_card_3_pressed() -> void: pick(2)
+func _on_card_1_pressed() -> void: AudioManager.play_ui_click(); pick(0)
+func _on_card_2_pressed() -> void: AudioManager.play_ui_click(); pick(1)
+func _on_card_3_pressed() -> void: AudioManager.play_ui_click(); pick(2)
