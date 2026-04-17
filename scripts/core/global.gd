@@ -40,10 +40,10 @@ var shot_counter: Dictionary = {}
 # Oryginalne staty — NIGDY nie modyfikuj tego słownika.
 # Służy jako source-of-truth przy każdym reset_all().
 const ORIGINAL_BASE_CHARACTERS: Dictionary = {
-	"Strawberry": { "hp": 100, "speed": 80,  "dmg": 25, "range": 100, "fire_rate": 0.8 },
-	"Orange":     { "hp": 50,  "speed": 90,  "dmg": 50, "range": 400, "fire_rate": 2.5 },
-	"Pineapple":  { "hp": 200, "speed": 60,  "dmg": 30, "range": 80,  "fire_rate": 0.5 },
-	"Grape":      { "hp": 80,  "speed": 100, "dmg": 15, "range": 150, "fire_rate": 0.2 },
+	"Strawberry": { "hp": 120, "speed": 85,  "dmg": 25, "range": 120, "fire_rate": 0.7 },
+	"Orange":     { "hp": 60,  "speed": 95,  "dmg": 65, "range": 450, "fire_rate": 2.0 },
+	"Pineapple":  { "hp": 250, "speed": 55,  "dmg": 40, "range": 80,  "fire_rate": 0.6 },
+	"Grape":      { "hp": 90,  "speed": 110, "dmg": 10, "range": 180, "fire_rate": 0.15 },
 }
 
 # Kopia robocza — może być modyfikowana przez mody (thick_skin, seed_collector itp.)
@@ -60,27 +60,27 @@ var modifier_registry: Dictionary = {
 	"radioactive_seed":   { "name": "Radioaktywna pestka",    "emoji": "☢️",  "category": "projectile", "trigger": "on_hit",     "desc": "Przy trafieniu zostaje toksyczna plama na 3 sek." },
 	"rot_shot":           { "name": "Strzał zgnilizny",       "emoji": "🦠",  "category": "projectile", "trigger": "on_hit",     "desc": "Trafiony wróg gnije o 3 sek szybciej." },
 	"magnetic_seed":      { "name": "Magnetyczna pestka",     "emoji": "🧲",  "category": "projectile", "trigger": "on_shoot",   "desc": "Pocisk skręca w kierunku wroga w zasięgu 2m." },
-	"thick_skin":         { "name": "Gruba skórka",           "emoji": "🥊",  "category": "defense",    "trigger": "on_apply",   "desc": "Maksymalne HP +25." },
+	"thick_skin":         { "name": "Gruba skórka",           "emoji": "🥊",  "category": "defense",    "trigger": "on_apply",   "desc": "Maksymalne HP +35." },
 	"juicy_core":         { "name": "Soczyste wnętrze",       "emoji": "💧",  "category": "defense",    "trigger": "on_hit",     "desc": "Odzyskujesz 15% brakującego HP przy trafieniu wroga." },
 	"wax_coat":           { "name": "Woskowa powłoka",        "emoji": "🕯️",  "category": "defense",    "trigger": "on_receive", "desc": "Blokujesz pierwsze trafienie w rundzie." },
-	"thorn_shield":       { "name": "Kolczasta tarcza",       "emoji": "🌵",  "category": "defense",    "trigger": "on_receive", "desc": "Wrogowie trafiający cię dostają -3 HP." },
-	"hard_fruit":         { "name": "Twardy owoc",            "emoji": "🪨",  "category": "defense",    "trigger": "on_receive", "desc": "Redukcja wszystkich obrażeń o 10%." },
-	"antirot":            { "name": "Antyzgnilizna",          "emoji": "🧴",  "category": "defense",    "trigger": "passive",    "desc": "Gnijesz o 5 sek wolniej." },
+	"thorn_shield":       { "name": "Kolczasta tarcza",       "emoji": "🌵",  "category": "defense",    "trigger": "on_receive", "desc": "Wrogowie trafiający cię dostają -5 HP." },
+	"hard_fruit":         { "name": "Twardy owoc",            "emoji": "🪨",  "category": "defense",    "trigger": "on_receive", "desc": "Redukcja wszystkich obrażeń o 15%." },
+	"antirot":            { "name": "Antyzgnilizna",          "emoji": "🧴",  "category": "defense",    "trigger": "passive",    "desc": "Gnijesz o 10 sek wolniej." },
 	"preservative":       { "name": "Konserwant",             "emoji": "🛡️",  "category": "defense",    "trigger": "on_apply",   "desc": "Przez pierwsze 15 sek rundy jesteś odporny na efekty negatywne." },
 	"second_fruit":       { "name": "Drugi owoc",             "emoji": "🍀",  "category": "defense",    "trigger": "on_lethal",  "desc": "Raz na rundę przeżywasz śmiertelny cios z 5 HP." },
 	"still_green":        { "name": "Zielony jeszcze",        "emoji": "🌿",  "category": "defense",    "trigger": "passive",    "desc": "Gdy HP < 30%, regenerujesz 1 HP co 2 sek." },
-	"stone_seed":         { "name": "Kamienna pestka",        "emoji": "🗿",  "category": "defense",    "trigger": "on_apply",   "desc": "+8 pancerza, ale -10% prędkości ruchu." },
+	"stone_seed":         { "name": "Kamienna pestka",        "emoji": "🗿",  "category": "defense",    "trigger": "on_apply",   "desc": "+10 pancerza, ale -10% prędkości ruchu." },
 	"extra_bounce":       { "name": "Dodatkowe odbicie",      "emoji": "↩️",  "category": "bounce",     "trigger": "on_shoot",   "desc": "Pocisk odbija się o +1 powierzchnię więcej." },
 	"accelerating_bounce":{ "name": "Przyspieszające odbicie","emoji": "⚡",  "category": "bounce",     "trigger": "on_bounce",  "desc": "Każde odbicie zwiększa prędkość pocisku o 10%." },
 	"destroying_bounce":  { "name": "Niszczące odbicie",      "emoji": "💢",  "category": "bounce",     "trigger": "on_bounce",  "desc": "Każde odbicie dodaje +5 DMG." },
 	"magnetic_bounce":    { "name": "Magnetyczne odbicie",    "emoji": "🧲",  "category": "bounce",     "trigger": "on_bounce",  "desc": "Po odbiciu pocisk leci w stronę najbliższego wroga przez 2 sek." },
 	"mirror_skin":        { "name": "Lustrzana skórka",       "emoji": "🪞",  "category": "defense",    "trigger": "on_receive", "desc": "10% szansa na odbicie ataku wroga." },
-	"rage_bounce":        { "name": "Wściekłe odbicie",       "emoji": "😡",  "category": "bounce",     "trigger": "on_bounce",  "desc": "Odbity pocisk zadaje 30% więcej obrażeń." },
+	"rage_bounce":        { "name": "Wściekłe odbicie",       "emoji": "😡",  "category": "bounce",     "trigger": "on_bounce",  "desc": "Odbity pocisk zadaje 40% więcej obrażeń." },
 	"ripe_sprint":        { "name": "Dojrzały sprint",        "emoji": "👟",  "category": "passive",    "trigger": "on_apply",   "desc": "Prędkość ruchu +15%." },
 	"rot_accelerator":    { "name": "Przyspieszacz gnicia",   "emoji": "💀",  "category": "area",       "trigger": "passive",    "desc": "Wrogowie w twoim zasięgu gniją 15% szybciej." },
 	"rot_explosion":      { "name": "Gnilna eksplozja",       "emoji": "🌋",  "category": "defense",    "trigger": "passive",    "desc": "Gdy HP < 20%, odpychasz wrogów i leczysz 10 HP (jednorazowo)." },
 	"seed_collector":     { "name": "Kolekcjoner pestek",     "emoji": "🌰",  "category": "projectile", "trigger": "on_hit",     "desc": "Każde trafienie bez otrzymania ciosu daje +1 DMG. Reset przy ciosie." },
-	"fruit_streak":       { "name": "Owocowa passa",          "emoji": "🔥",  "category": "projectile", "trigger": "on_hit",     "desc": "3 trafienia z rzędu = następny pocisk +30% obrażeń." },
+	"fruit_streak":       { "name": "Owocowa passa",          "emoji": "🔥",  "category": "projectile", "trigger": "on_hit",     "desc": "3 trafienia z rzędu = następny pocisk +40% obrażeń." },
 	"mod_duplicator":     { "name": "Duplikator modów",       "emoji": "🔄",  "category": "passive",    "trigger": "on_apply",   "desc": "Losowy posiadany modyfikator zostaje skopiowany." },
 	"bouncy":   { "name": "Odbijające pociski", "emoji": "↩️", "category": "bounce",     "trigger": "on_shoot",   "desc": "Pociski odbijają się 4 razy." },
 	"spinning": { "name": "Wirujące pociski",   "emoji": "🌪️", "category": "projectile", "trigger": "passive",    "desc": "Pociski poruszają się sinusoidalnie." },
@@ -111,12 +111,66 @@ var all_modifiers: Array = [
 ]
 
 func _ready() -> void:
+	_setup_gamepads()
 	base_characters = ORIGINAL_BASE_CHARACTERS.duplicate(true)
 	round_number    = 1
 	points          = {}
 	modifiers       = {}
 	reset_selection()
 	reset_all()
+
+func _setup_gamepads() -> void:
+	for i in range(4):
+		var prefix = "p" + str(i + 1)
+		
+		# Skok (A)
+		var ev_jump = InputEventJoypadButton.new()
+		ev_jump.device = i
+		ev_jump.button_index = JOY_BUTTON_A
+		InputMap.action_add_event(prefix + "_jump", ev_jump)
+		
+		# Strzał (X / Right Bumper / Right Trigger)
+		var ev_shoot = InputEventJoypadButton.new()
+		ev_shoot.device = i
+		ev_shoot.button_index = JOY_BUTTON_X
+		InputMap.action_add_event(prefix + "_shoot", ev_shoot)
+		
+		var ev_shoot2 = InputEventJoypadButton.new()
+		ev_shoot2.device = i
+		ev_shoot2.button_index = JOY_BUTTON_RIGHT_SHOULDER
+		InputMap.action_add_event(prefix + "_shoot", ev_shoot2)
+		
+		var ev_shoot_trigger = InputEventJoypadMotion.new()
+		ev_shoot_trigger.device = i
+		ev_shoot_trigger.axis = JOY_AXIS_RIGHT_TRIGGER
+		ev_shoot_trigger.axis_value = 1.0
+		InputMap.action_add_event(prefix + "_shoot", ev_shoot_trigger)
+		
+		# Lewo (D-Pad Left)
+		var ev_left = InputEventJoypadButton.new()
+		ev_left.device = i
+		ev_left.button_index = JOY_BUTTON_DPAD_LEFT
+		InputMap.action_add_event(prefix + "_left", ev_left)
+		
+		# Lewo (Left Stick -X)
+		var ev_stick_l = InputEventJoypadMotion.new()
+		ev_stick_l.device = i
+		ev_stick_l.axis = JOY_AXIS_LEFT_X
+		ev_stick_l.axis_value = -1.0
+		InputMap.action_add_event(prefix + "_left", ev_stick_l)
+		
+		# Prawo (D-Pad Right)
+		var ev_right = InputEventJoypadButton.new()
+		ev_right.device = i
+		ev_right.button_index = JOY_BUTTON_DPAD_RIGHT
+		InputMap.action_add_event(prefix + "_right", ev_right)
+		
+		# Prawo (Left Stick +X)
+		var ev_stick_r = InputEventJoypadMotion.new()
+		ev_stick_r.device = i
+		ev_stick_r.axis = JOY_AXIS_LEFT_X
+		ev_stick_r.axis_value = 1.0
+		InputMap.action_add_event(prefix + "_right", ev_stick_r)
 
 func reset_selection() -> void:
 	available_characters   = base_characters.keys()

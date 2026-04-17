@@ -50,18 +50,18 @@ Przegląd tego co zrobione i co przed nami.
 - [x] Wizualny timer gnicia (pasek nad areną lub per gracz)
 
 ### 🎯 v0.6.0 — Mapy + Balans
-- [ ] 3-5 map z różnym layoutem (platformy, ściany, pułapki)
-- [ ] Losowy wybór mapy lub głosowanie
-- [ ] Balans postaci na podstawie playtestów
-- [ ] Balans modyfikatorów (nerf/buff na podstawie danych)
+- [x] 3-5 map z różnym layoutem (platformy, ściany, pułapki)
+- [x] Losowy wybór mapy lub głosowanie
+- [x] Balans postaci na podstawie playtestów
+- [x] Balans modyfikatorów (nerf/buff na podstawie danych)
 - [ ] Opcjonalne: destructible terrain
 
 ### 🎯 v0.7.0 — UX + HUD
-- [ ] HUD w grze: HP bar, timer gnicia, aktywne mody, kill count
-- [ ] Ekran tytułowy / splash screen
-- [ ] Gamepad support (Xbox/PS kontrolery)
-- [ ] Ustawienia: głośność, rozdzielczość, keybinds
-- [ ] Zapisywanie ustawień (ConfigFile)
+- [x] HUD w grze: HP bar, timer gnicia, aktywne mody, kill count
+- [x] Ekran tytułowy / splash screen
+- [x] Gamepad support (Xbox/PS kontrolery)
+- [x] Ustawienia: głośność, rozdzielczość, keybinds
+- [x] Zapisywanie ustawień (ConfigFile)
 
 ### 🎯 v0.8.0 — Nowa zawartość
 - [ ] 2 nowe postacie (np. Lemon — ranged DOT, Watermelon — heavy shield)

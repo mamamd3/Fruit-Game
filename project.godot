@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="gra"
-run/main_scene="res://scenes/ui/main_menu.tscn"
+run/main_scene="res://scenes/ui/splash_screen.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -21,6 +21,7 @@ Global="*res://scenes/global.tscn"
 ModifierSystem="*res://scripts/core/Modifier_System.gd"
 MultiplayerManager="*res://scripts/multiplayer/multiplayermanager.gd"
 AudioManager="*res://scripts/core/audio_manager.gd"
+SettingsManager="*res://scripts/core/settings_manager.gd"
 
 [global_group]
 

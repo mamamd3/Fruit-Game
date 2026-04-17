@@ -224,19 +224,19 @@ Fruit-Game/
 | Efekty cząsteczkowe (trafienie, śmierć, eksplozja) | ✅ |
 | Screen shake przy eksplozji i śmierci | ✅ |
 | Wizualny timer gnicia (pasek nad postacią) | ✅ |
+| 4 zróżnicowane mapy + losowy wybór | ✅ |
+| Balans postaci i modyfikatorów | ✅ |
+| Ekran tytułowy (Splash screen) | ✅ |
+| Gamepad support (Xbox/PS) | ✅ |
+| HUD z ilością punktów i modyfikatorami | ✅ |
+| Zapisywanie ustawień gry (ConfigFile) | ✅ |
 
 ### 🔧 Do zrobienia (backlog)
 
 | Funkcja | Priorytet |
 |---------|-----------|
-| Więcej map / losowa mapa | 🔴 Wysoki |
 | Pixel art sprite'y zamiast draw-based | 🟡 Średni |
-| Ekran tytułowy / splash screen | 🟡 Średni |
-| Balans postaci (playtesting) | 🟡 Średni |
-| Gamepad support | 🟡 Średni |
-| HUD — aktywne mody, kill count | 🟡 Średni |
 | Interpolacja sieciowa (smooth movement online) | 🟢 Niski |
 | Reconnect po rozłączeniu | 🟢 Niski |
 | Boty w trybie LAN | 🟢 Niski |
-| Zapisywanie ustawień gracza | 🟢 Niski |
 | Export na Windows / Linux / Android | 🟢 Niski |

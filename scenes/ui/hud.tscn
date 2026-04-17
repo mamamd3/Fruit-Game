@@ -1,0 +1,86 @@
+[gd_scene load_steps=2 format=3 uid="uid://cxab3hud"]
+
+[ext_resource type="Script" path="res://scripts/ui/hud.gd" id="1_hud"]
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_hud")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Margin" type="MarginContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+mouse_filter = 2
+
+[node name="Grid" type="Control" parent="Control/Margin"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="P1Label" type="RichTextLabel" parent="Control/Margin/Grid"]
+layout_mode = 1
+anchors_preset = 0
+offset_right = 300.0
+offset_bottom = 150.0
+theme_override_font_sizes/normal_font_size = 20
+theme_override_font_sizes/bold_font_size = 22
+bbcode_enabled = true
+text = "P1"
+mouse_filter = 2
+
+[node name="P2Label" type="RichTextLabel" parent="Control/Margin/Grid"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -300.0
+offset_bottom = 150.0
+grow_horizontal = 0
+theme_override_font_sizes/normal_font_size = 20
+theme_override_font_sizes/bold_font_size = 22
+bbcode_enabled = true
+text = "P2"
+text_direction = 2
+mouse_filter = 2
+
+[node name="P3Label" type="RichTextLabel" parent="Control/Margin/Grid"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -150.0
+offset_right = 300.0
+grow_vertical = 0
+theme_override_font_sizes/normal_font_size = 20
+theme_override_font_sizes/bold_font_size = 22
+bbcode_enabled = true
+text = "P3"
+mouse_filter = 2
+
+[node name="P4Label" type="RichTextLabel" parent="Control/Margin/Grid"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -300.0
+offset_top = -150.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/normal_font_size = 20
+theme_override_font_sizes/bold_font_size = 22
+bbcode_enabled = true
+text = "P4"
+text_direction = 2
+mouse_filter = 2
