@@ -19,6 +19,10 @@ func _ready() -> void:
 		return
 
 	var dmg = float(Global.characters[shooter_name]["dmg"]) * 0.5
+	
+	if Global.main_game:
+		Global.main_game.add_shake(12.0)
+	Global.spawn_particles(global_position, Color(1.0, 0.5, 0.0), 30)
 
 	for body in get_overlapping_bodies():
 		if not is_instance_valid(body):

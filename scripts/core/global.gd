@@ -3,6 +3,7 @@ signal kill_feed_message(text: String)
 
 # ── Tryb sieciowy ─────────────────────────────────────────────────────────────
 var is_network_game:   bool = false   # true gdy gram przez sieć
+var main_game:         Node = null    # odniesienie do głównej instancji gry
 var local_player_slot: int  = 0       # który slot kontroluję (1-4), 0 = lokalny
 
 var player1_character: String = ""
@@ -130,7 +131,7 @@ func reset_all() -> void:
 	base_characters = ORIGINAL_BASE_CHARACTERS.duplicate(true)
 	characters      = ORIGINAL_BASE_CHARACTERS.duplicate(true)
 	shot_counter = {}
-	rot_bonus    = {}
+	rot_bonus.clear()
 	alive        = {}
 	var all_chars = [player1_character, player2_character, player3_character, player4_character]
 	for ch in all_chars:
@@ -221,3 +222,22 @@ func rpc_reset_all() -> void:
 
 # _physics_process USUNIĘTY CAŁKOWICIE
 # Koniec rundy wykrywa wyłącznie main_game.gd
+
+func spawn_particles(pos: Vector2, color: Color, amount: int = 15) -> void:
+	if main_game == null or not is_instance_valid(main_game): return
+	var cp = CPUParticles2D.new()
+	cp.position = pos
+	cp.emitting = true
+	cp.one_shot = true
+	cp.explosiveness = 0.9
+	cp.amount = amount
+	cp.lifetime = 0.5
+	cp.spread = 180.0
+	cp.gravity = Vector2(0, 300)
+	cp.initial_velocity_min = 100
+	cp.initial_velocity_max = 200
+	cp.scale_amount_min = 3.0
+	cp.scale_amount_max = 6.0
+	cp.color = color
+	main_game.add_child(cp)
+	get_tree().create_timer(1.0).timeout.connect(cp.queue_free)

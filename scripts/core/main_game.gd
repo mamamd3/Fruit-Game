@@ -39,6 +39,7 @@ func _ready() -> void:
 	Global.reset_all()
 	_setup_kill_feed()
 	Global.game_started = true
+	Global.main_game = self
 	_ending_round = false
 
 	print("=== RUNDA " + str(Global.round_number) + " ===")
@@ -165,7 +166,20 @@ func _on_gnicie_timeout() -> void:
 	_end_round("")
 
 
-func _physics_process(_delta: float) -> void:
+var shake_amount: float = 0.0
+
+func add_shake(amount: float) -> void:
+	shake_amount = max(shake_amount, amount)
+
+func _physics_process(delta: float) -> void:
+	if shake_amount > 0:
+		shake_amount = move_toward(shake_amount, 0, delta * 50.0)
+		if has_node("Camera2D"):
+			$Camera2D.offset = Vector2(randf_range(-1, 1), randf_range(-1, 1)) * shake_amount
+	else:
+		if has_node("Camera2D"):
+			$Camera2D.offset = Vector2.ZERO
+
 	if _ending_round:
 		return
 	# W trybie sieciowym koniec rundy wykrywa tylko serwer

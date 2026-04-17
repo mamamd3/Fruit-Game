@@ -220,19 +220,21 @@ Fruit-Game/
 | Odbijanie pocisków od terenu | ✅ |
 | Etykiety z nazwami nad postaciami | ✅ |
 | Dźwięki i muzyka | ✅ |
+| Animacje postaci (proceduralne) | ✅ |
+| Efekty cząsteczkowe (trafienie, śmierć, eksplozja) | ✅ |
+| Screen shake przy eksplozji i śmierci | ✅ |
+| Wizualny timer gnicia (pasek nad postacią) | ✅ |
 
 ### 🔧 Do zrobienia (backlog)
 
 | Funkcja | Priorytet |
 |---------|-----------|
 | Więcej map / losowa mapa | 🔴 Wysoki |
-| Animacje postaci (idle, walk, jump, attack) | 🔴 Wysoki |
 | Pixel art sprite'y zamiast draw-based | 🟡 Średni |
 | Ekran tytułowy / splash screen | 🟡 Średni |
 | Balans postaci (playtesting) | 🟡 Średni |
 | Gamepad support | 🟡 Średni |
-| HUD — timer gnicia, aktywne mody, kill count | 🟡 Średni |
-| Efekty cząsteczkowe (trafienie, śmierć, eksplozja) | 🟡 Średni |
+| HUD — aktywne mody, kill count | 🟡 Średni |
 | Interpolacja sieciowa (smooth movement online) | 🟢 Niski |
 | Reconnect po rozłączeniu | 🟢 Niski |
 | Boty w trybie LAN | 🟢 Niski |

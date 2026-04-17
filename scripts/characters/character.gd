@@ -9,6 +9,11 @@ extends CharacterBody2D
 @onready var JumpBufferTimer:  Timer       = $JumpBufferTimer
 @onready var Reloading:        Timer       = $ReloadTime
 @onready var health_bar:       ProgressBar = $HealthBar
+@onready var fruit_sprite:     Node2D      = $FruitSprite
+
+var rot_bar: ProgressBar
+var _anim_time: float = 0.0
+var _recoil_time: float = 0.0
 
 signal shoot(pos: Vector2, dir: Vector2)
 
@@ -105,6 +110,18 @@ func _ready() -> void:
 	health_bar.max_value = Global.base_characters[character_name]["hp"]
 	health_bar.value     = Global.characters[character_name]["hp"]
 
+	# Wizualny timer gnicia
+	rot_bar = ProgressBar.new()
+	rot_bar.max_value = BASE_ROT_TIME
+	rot_bar.value = rot_time_remaining
+	rot_bar.show_percentage = false
+	rot_bar.size = Vector2(16, 2)
+	rot_bar.position = Vector2(-8, -17)
+	var sb = StyleBoxFlat.new()
+	sb.bg_color = Color(0.2, 0.8, 0.2)
+	rot_bar.add_theme_stylebox_override("fill", sb)
+	add_child(rot_bar)
+
 	# Etykieta z nazwą nad postacią
 	var lbl = Label.new()
 	lbl.text = character_name
@@ -130,6 +147,7 @@ func get_input() -> void:
 		return
 	shoot.emit(position, get_local_mouse_position().normalized())
 	Reloading.start()
+	_recoil_time = 0.1
 
 
 # ─────────────────────────────────────────────
@@ -159,6 +177,7 @@ func receive_damage(raw_dmg: float, attacker_name: String = "") -> float:
 		return 0.0
 
 	AudioManager.play_sound("hit")
+	Global.spawn_particles(global_position, Color(1, 0, 0), 5)
 
 	# Sprawdź czy cios byłby śmiertelny
 	var cur_hp = float(Global.characters[character_name]["hp"])
@@ -181,6 +200,9 @@ func die() -> void:
 	_is_dying = true
 	
 	AudioManager.play_sound("death")
+	if Global.main_game:
+		Global.main_game.add_shake(15.0)
+	Global.spawn_particles(global_position, Color(0.5, 0, 0), 20)
 
 	Global.alive[character_name] = false
 	Global.death_order.append(character_name)
@@ -194,6 +216,28 @@ func die() -> void:
 func _process(delta: float) -> void:
 	if is_remote:
 		global_position = global_position.lerp(_net_target_pos, clampf(delta * NET_LERP_SPEED, 0.0, 1.0))
+	
+	if _is_dying: return
+	_anim_time += delta
+	if _recoil_time > 0:
+		_recoil_time -= delta
+	
+	if is_instance_valid(fruit_sprite):
+		fruit_sprite.scale = Vector2.ONE
+		fruit_sprite.rotation = 0.0
+		if not is_on_floor():
+			var stretch = clamp(abs(velocity.y) / 500.0, 0.0, 0.3)
+			fruit_sprite.scale = Vector2(1.0 - stretch*0.5, 1.0 + stretch)
+		else:
+			if abs(velocity.x) > 5.0:
+				fruit_sprite.rotation = sin(_anim_time * 20.0) * 0.15
+				if velocity.x < 0: fruit_sprite.scale.x = -1
+			else:
+				fruit_sprite.scale.y = 1.0 + sin(_anim_time * 5.0) * 0.03
+				fruit_sprite.scale.x = 1.0 - sin(_anim_time * 5.0) * 0.02
+		
+		if _recoil_time > 0:
+			fruit_sprite.scale *= (1.0 + _recoil_time * 2.0)
 
 
 # ─────────────────────────────────────────────
@@ -240,9 +284,11 @@ func _physics_process(delta: float) -> void:
 			var stacks = poison_stack_timers.size()
 			if stacks > 0:
 				Global.take_damage(character_name, 5.0 * stacks, "🧪 Trucizna")
+				Global.spawn_particles(global_position, Color(0.5, 0.0, 0.8), 10)
 
 	# Per-gracz gnicie — gdy czas się skończy, gracz umiera
 	rot_time_remaining -= delta
+	if rot_bar: rot_bar.value = rot_time_remaining
 	if rot_time_remaining <= 0.0:
 		Global.take_damage(character_name, 9999.0, "🦠 Zgnilizna")
 

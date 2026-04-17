@@ -42,12 +42,12 @@ Przegląd tego co zrobione i co przed nami.
 ---
 
 ### 🎯 v0.5.0 — Audio + Visual Polish
-- [ ] Dźwięki: strzał, trafienie, śmierć, skok, wybór postaci
-- [ ] Muzyka: menu, walka (loopable)
-- [ ] Animacje postaci: idle, walk, jump, attack/shoot
-- [ ] Efekty cząsteczkowe: trafienie, śmierć, eksplozja, trucizna
-- [ ] Screen shake przy eksplozji / śmierci
-- [ ] Wizualny timer gnicia (pasek nad areną lub per gracz)
+- [x] Dźwięki: strzał, trafienie, śmierć, skok, wybór postaci
+- [x] Muzyka: menu, walka (loopable)
+- [x] Animacje postaci: idle, walk, jump, attack/shoot
+- [x] Efekty cząsteczkowe: trafienie, śmierć, eksplozja, trucizna
+- [x] Screen shake przy eksplozji / śmierci
+- [x] Wizualny timer gnicia (pasek nad areną lub per gracz)
 
 ### 🎯 v0.6.0 — Mapy + Balans
 - [ ] 3-5 map z różnym layoutem (platformy, ściany, pułapki)
