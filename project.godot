@@ -21,6 +21,7 @@ Global="*res://scenes/global.tscn"
 ModifierSystem="*res://scripts/core/Modifier_System.gd"
 MultiplayerManager="*res://scripts/multiplayer/multiplayermanager.gd"
 AudioManager="*res://scripts/core/audio_manager.gd"
+SettingsManager="*res://scripts/core/settings_manager.gd"
 
 [global_group]
 

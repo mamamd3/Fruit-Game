@@ -111,12 +111,66 @@ var all_modifiers: Array = [
 ]
 
 func _ready() -> void:
+	_setup_gamepads()
 	base_characters = ORIGINAL_BASE_CHARACTERS.duplicate(true)
 	round_number    = 1
 	points          = {}
 	modifiers       = {}
 	reset_selection()
 	reset_all()
+
+func _setup_gamepads() -> void:
+	for i in range(4):
+		var prefix = "p" + str(i + 1)
+		
+		# Skok (A)
+		var ev_jump = InputEventJoypadButton.new()
+		ev_jump.device = i
+		ev_jump.button_index = JOY_BUTTON_A
+		InputMap.action_add_event(prefix + "_jump", ev_jump)
+		
+		# Strzał (X / Right Bumper / Right Trigger)
+		var ev_shoot = InputEventJoypadButton.new()
+		ev_shoot.device = i
+		ev_shoot.button_index = JOY_BUTTON_X
+		InputMap.action_add_event(prefix + "_shoot", ev_shoot)
+		
+		var ev_shoot2 = InputEventJoypadButton.new()
+		ev_shoot2.device = i
+		ev_shoot2.button_index = JOY_BUTTON_RIGHT_SHOULDER
+		InputMap.action_add_event(prefix + "_shoot", ev_shoot2)
+		
+		var ev_shoot_trigger = InputEventJoypadMotion.new()
+		ev_shoot_trigger.device = i
+		ev_shoot_trigger.axis = JOY_AXIS_RIGHT_TRIGGER
+		ev_shoot_trigger.axis_value = 1.0
+		InputMap.action_add_event(prefix + "_shoot", ev_shoot_trigger)
+		
+		# Lewo (D-Pad Left)
+		var ev_left = InputEventJoypadButton.new()
+		ev_left.device = i
+		ev_left.button_index = JOY_BUTTON_DPAD_LEFT
+		InputMap.action_add_event(prefix + "_left", ev_left)
+		
+		# Lewo (Left Stick -X)
+		var ev_stick_l = InputEventJoypadMotion.new()
+		ev_stick_l.device = i
+		ev_stick_l.axis = JOY_AXIS_LEFT_X
+		ev_stick_l.axis_value = -1.0
+		InputMap.action_add_event(prefix + "_left", ev_stick_l)
+		
+		# Prawo (D-Pad Right)
+		var ev_right = InputEventJoypadButton.new()
+		ev_right.device = i
+		ev_right.button_index = JOY_BUTTON_DPAD_RIGHT
+		InputMap.action_add_event(prefix + "_right", ev_right)
+		
+		# Prawo (Left Stick +X)
+		var ev_stick_r = InputEventJoypadMotion.new()
+		ev_stick_r.device = i
+		ev_stick_r.axis = JOY_AXIS_LEFT_X
+		ev_stick_r.axis_value = 1.0
+		InputMap.action_add_event(prefix + "_right", ev_stick_r)
 
 func reset_selection() -> void:
 	available_characters   = base_characters.keys()
