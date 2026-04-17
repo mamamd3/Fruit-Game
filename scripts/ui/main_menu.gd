@@ -79,6 +79,9 @@ func _on_start_local_pressed() -> void:
 	# Przechodzimy do choose_character — boty dostaną losowe postaci automatycznie
 	get_tree().change_scene_to_file("res://scenes/ui/choose_character.tscn")
 
+func _on_options_pressed() -> void:
+	AudioManager.play_ui_click()
+	get_tree().change_scene_to_file("res://scenes/ui/options_menu.tscn")
 
 # ═══════════════════════════════════════════════════════
 # TRYB LAN

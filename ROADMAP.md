@@ -57,11 +57,11 @@ Przegląd tego co zrobione i co przed nami.
 - [ ] Opcjonalne: destructible terrain
 
 ### 🎯 v0.7.0 — UX + HUD
-- [ ] HUD w grze: HP bar, timer gnicia, aktywne mody, kill count
-- [ ] Ekran tytułowy / splash screen
-- [ ] Gamepad support (Xbox/PS kontrolery)
-- [ ] Ustawienia: głośność, rozdzielczość, keybinds
-- [ ] Zapisywanie ustawień (ConfigFile)
+- [x] HUD w grze: HP bar, timer gnicia, aktywne mody, kill count
+- [x] Ekran tytułowy / splash screen
+- [x] Gamepad support (Xbox/PS kontrolery)
+- [x] Ustawienia: głośność, rozdzielczość, keybinds
+- [x] Zapisywanie ustawień (ConfigFile)
 
 ### 🎯 v0.8.0 — Nowa zawartość
 - [ ] 2 nowe postacie (np. Lemon — ranged DOT, Watermelon — heavy shield)

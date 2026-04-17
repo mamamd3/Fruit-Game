@@ -59,6 +59,11 @@ func _ready() -> void:
 
 	AudioManager.play_bgm()
 	$Gnicie.start()
+	
+	# HUD
+	var hud_scene = preload("res://scenes/ui/hud.tscn")
+	var hud_instance = hud_scene.instantiate()
+	add_child(hud_instance)
 
 
 func _spawn_player(character_name: String, spawn_pos: Vector2, player_prefix: String) -> void:

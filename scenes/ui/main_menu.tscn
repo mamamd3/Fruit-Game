@@ -134,6 +134,15 @@ text = ""
 horizontal_alignment = 1
 autowrap_mode = 2
 
+[node name="Separator2" type="HSeparator" parent="VBox"]
+layout_mode = 2
+
+[node name="OptionsButton" type="Button" parent="VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+theme_override_font_sizes/font_size = 20
+text = "⚙️ Ustawienia"
+
 [connection signal="pressed" from="VBox/LocalPanel/SlotsGrid/Slot1Button" to="." method="_on_slot_1_pressed"]
 [connection signal="pressed" from="VBox/LocalPanel/SlotsGrid/Slot2Button" to="." method="_on_slot_2_pressed"]
 [connection signal="pressed" from="VBox/LocalPanel/SlotsGrid/Slot3Button" to="." method="_on_slot_3_pressed"]
@@ -141,3 +150,4 @@ autowrap_mode = 2
 [connection signal="pressed" from="VBox/LocalPanel/StartLocalButton" to="." method="_on_start_local_pressed"]
 [connection signal="pressed" from="VBox/LANPanel/HostButton" to="." method="_on_host_pressed"]
 [connection signal="pressed" from="VBox/LANPanel/JoinButton" to="." method="_on_join_pressed"]
+[connection signal="pressed" from="VBox/OptionsButton" to="." method="_on_options_pressed"]
