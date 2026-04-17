@@ -44,6 +44,8 @@ const ORIGINAL_BASE_CHARACTERS: Dictionary = {
 	"Orange":     { "hp": 60,  "speed": 95,  "dmg": 65, "range": 450, "fire_rate": 2.0 },
 	"Pineapple":  { "hp": 250, "speed": 55,  "dmg": 40, "range": 80,  "fire_rate": 0.6 },
 	"Grape":      { "hp": 90,  "speed": 110, "dmg": 10, "range": 180, "fire_rate": 0.15 },
+	"Lemon":      { "hp": 80,  "speed": 90,  "dmg": 15, "range": 300, "fire_rate": 0.8 },
+	"Watermelon": { "hp": 300, "speed": 40,  "dmg": 70, "range": 90,  "fire_rate": 1.5 },
 }
 
 # Kopia robocza — może być modyfikowana przez mody (thick_skin, seed_collector itp.)
