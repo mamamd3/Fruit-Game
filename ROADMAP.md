@@ -95,9 +95,9 @@ Przegląd tego co zrobione i co przed nami.
 | v0.2.0 | ✅ Done | Mody, rundy, pociski, kill feed |
 | v0.3.0 | ✅ Done | Multiplayer LAN |
 | v0.4.0 | ✅ Done | Menu, boty, melee, cleanup |
-| v0.5.0 | 🎯 Next | Audio, animacje, efekty |
-| v0.6.0 | 📋 Plan | Mapy, balans |
-| v0.7.0 | 📋 Plan | UX, HUD, gamepad |
-| v0.8.0 | 📋 Plan | Nowa zawartość |
+| v0.5.0 | ✅ Done | Audio, animacje, efekty |
+| v0.6.0 | ✅ Done | Mapy, balans |
+| v0.7.0 | ✅ Done | UX, HUD, gamepad |
+| v0.8.0 | 🎯 Next | Nowa zawartość |
 | v0.9.0 | 📋 Plan | Network polish |
 | v1.0.0 | 📋 Plan | Release |
