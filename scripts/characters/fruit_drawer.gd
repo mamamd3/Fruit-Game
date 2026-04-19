@@ -1,9 +1,6 @@
 extends Node2D
-<<<<<<< HEAD
 ## Rysuje owocowe kształty dla postaci.
 ## Dodaj jako dziecko CharacterBody2D zamiast ColorRect.
-=======
->>>>>>> 890951f2ab378c3e8bbc57105e1f974768f59135
 
 @export var fruit_type: String = "Strawberry"
 
@@ -127,6 +124,7 @@ func _draw_pineapple():
 
 	_draw_eyes(Vector2(-3, -2), Vector2(3, -2))
 
+<<<<<<< HEAD
 func _draw_lemon():
 	var body_color = Color(1.0, 0.95, 0.15)
 	var highlight  = Color(1.0, 1.0, 0.55)
@@ -170,7 +168,6 @@ func _draw_watermelon():
 func _draw_eyes(left_pos: Vector2, right_pos: Vector2):
 	draw_circle(left_pos, 2.0, Color.WHITE)
 	draw_circle(right_pos, 2.0, Color.WHITE)
-<<<<<<< HEAD
 =======
 func _draw_eyes(left_pos: Vector2, right_pos: Vector2):
 	# Białka
@@ -178,7 +175,5 @@ func _draw_eyes(left_pos: Vector2, right_pos: Vector2):
 	draw_circle(right_pos, 2.0, Color.WHITE)
 	# Źrenice
 >>>>>>> 5382e3a9fe5f451d31955617477d07f42102f009
-=======
->>>>>>> 890951f2ab378c3e8bbc57105e1f974768f59135
 	draw_circle(left_pos + Vector2(0.5, 0.5), 1.0, Color.BLACK)
 	draw_circle(right_pos + Vector2(0.5, 0.5), 1.0, Color.BLACK)
