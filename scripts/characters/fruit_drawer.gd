@@ -1,4 +1,4 @@
-﻿extends Node2D
+extends Node2D
 
 @export var fruit_type: String = "Strawberry"
 
@@ -100,7 +100,6 @@ func _draw_pineapple():
 		draw_colored_polygon(PackedVector2Array(leaf), leaf_color)
 	_draw_eyes(Vector2(-3, -2), Vector2(3, -2))
 
-<<<<<<< HEAD
 func _draw_lemon():
 	var body_color = Color(1.0, 0.95, 0.15)
 	var highlight = Color(1.0, 1.0, 0.55)
@@ -135,19 +134,7 @@ func _draw_watermelon():
 	_draw_eyes(Vector2(-3, -2), Vector2(3, -2))
 
 func _draw_eyes(left_pos: Vector2, right_pos: Vector2):
-<<<<<<< HEAD
 	draw_circle(left_pos, 2.0, Color.WHITE)
 	draw_circle(right_pos, 2.0, Color.WHITE)
-=======
-	draw_circle(left_pos, 2.0, Color.WHITE)
-	draw_circle(right_pos, 2.0, Color.WHITE)
-=======
-func _draw_eyes(left_pos: Vector2, right_pos: Vector2):
-	# Białka
-	draw_circle(left_pos, 2.0, Color.WHITE)
-	draw_circle(right_pos, 2.0, Color.WHITE)
-	# Źrenice
->>>>>>> 5382e3a9fe5f451d31955617477d07f42102f009
->>>>>>> e03f33fdfbd4476d7a3ac8fe97fbfe45a5b28e38
 	draw_circle(left_pos + Vector2(0.5, 0.5), 1.0, Color.BLACK)
 	draw_circle(right_pos + Vector2(0.5, 0.5), 1.0, Color.BLACK)
