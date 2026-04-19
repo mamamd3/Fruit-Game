@@ -1,0 +1,68 @@
+[gd_scene load_steps=4 format=3 uid="uid://lemonchar"]
+
+[ext_resource type="Script" path="res://scripts/characters/character.gd" id="1_iqrn4"]
+[ext_resource type="Script" path="res://scripts/characters/fruit_drawer.gd" id="2_fruit"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lemon"]
+size = Vector2(20, 20)
+
+[node name="Lemon" type="CharacterBody2D" groups=["Players", "lemon"]]
+script = ExtResource("1_iqrn4")
+character_name = "Lemon"
+
+[node name="FruitSprite" type="Node2D" parent="."]
+script = ExtResource("2_fruit")
+fruit_type = "Lemon"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_lemon")
+
+[node name="JumpBufferTimer" type="Timer" parent="."]
+wait_time = 0.12
+one_shot = true
+
+[node name="Coyote" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[node name="Left_HeadNudge" type="RayCast2D" parent="."]
+position = Vector2(-7, -7)
+target_position = Vector2(0, -2)
+
+[node name="Left_Head_Nudge2" type="RayCast2D" parent="."]
+position = Vector2(-5, -7)
+target_position = Vector2(0, -2)
+
+[node name="Right_Head_Nudge3" type="RayCast2D" parent="."]
+position = Vector2(7, -7)
+target_position = Vector2(0, -2)
+
+[node name="Right_Head_Nudge4" type="RayCast2D" parent="."]
+position = Vector2(5, -7)
+target_position = Vector2(0, -2)
+
+[node name="RayCast2D" type="RayCast2D" parent="."]
+position = Vector2(7, 6)
+target_position = Vector2(2, 0)
+
+[node name="RayCast2D2" type="RayCast2D" parent="."]
+position = Vector2(7, 2)
+target_position = Vector2(2, 0)
+
+[node name="RayCast2D3" type="RayCast2D" parent="."]
+position = Vector2(-7, 6)
+target_position = Vector2(-2, 0)
+
+[node name="RayCast2D4" type="RayCast2D" parent="."]
+position = Vector2(-7, 2)
+target_position = Vector2(-2, 0)
+
+[node name="ReloadTime" type="Timer" parent="."]
+one_shot = true
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+offset_left = -8.0
+offset_top = -14.0
+offset_right = 8.0
+offset_bottom = -10.0
+show_percentage = false
