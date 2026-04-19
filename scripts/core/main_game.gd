@@ -16,6 +16,14 @@ var character_scenes = {
 	"Pineapple": {
 		"scene":  preload("res://scenes/characters/pineapple.tscn"),
 		"bullet": preload("res://scenes/bullets/pineapple_bullet.tscn")
+	},
+	"Lemon": {
+		"scene":  preload("res://scenes/characters/lemon.tscn"),
+		"bullet": preload("res://scenes/bullets/orange_bullet.tscn")
+	},
+	"Watermelon": {
+		"scene":  preload("res://scenes/characters/watermelon.tscn"),
+		"bullet": preload("res://scenes/bullets/strawberry_bullet.tscn")
 	}
 }
 
