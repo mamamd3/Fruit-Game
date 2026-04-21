@@ -11,7 +11,7 @@ func _ready() -> void:
 	labels = [p1_label, p2_label, p3_label, p4_label]
 	update_hud()
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	# Częsta aktualizacja na wypadek zmian HP / modów
 	update_hud()
 
