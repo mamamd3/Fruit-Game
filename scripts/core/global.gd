@@ -250,6 +250,7 @@ func assign_points() -> void:
 			points[ch] += point_values[i]
 
 func get_modifier_pickers() -> Array:
+	@warning_ignore("integer_division")
 	var half: int = ranking.size() / 2
 	var pickers = []
 	for i in range(ranking.size() - 1, ranking.size() - half - 1, -1):
