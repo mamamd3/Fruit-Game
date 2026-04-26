@@ -47,9 +47,12 @@ func show_cards_for_current_picker() -> void:
 		card2.disabled = not can_pick
 		card3.disabled = not can_pick
 	else:
-		card1.disabled = false
-		card2.disabled = false
-		card3.disabled = false
+		var is_bot = _is_bot_picker(picker)
+		card1.disabled = is_bot
+		card2.disabled = is_bot
+		card3.disabled = is_bot
+		if is_bot:
+			call_deferred("_bot_auto_pick")
 
 
 func _set_card_text(card: Button, mod_id: String) -> void:
@@ -100,6 +103,17 @@ func pick(index: int) -> void:
 		current_picker_index += 1
 		show_cards_for_current_picker()
 
+
+func _is_bot_picker(char_name: String) -> bool:
+	var chars = [Global.player1_character, Global.player2_character,
+				 Global.player3_character, Global.player4_character]
+	for i in range(chars.size()):
+		if chars[i] == char_name:
+			return Global.slot_types.get(i + 1, "player") == "bot"
+	return false
+
+func _bot_auto_pick() -> void:
+	pick(randi() % current_cards.size())
 
 func _on_card_1_pressed() -> void: AudioManager.play_ui_click(); pick(0)
 func _on_card_2_pressed() -> void: AudioManager.play_ui_click(); pick(1)
